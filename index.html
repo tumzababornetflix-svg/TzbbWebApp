@@ -399,19 +399,27 @@ th{background:#e8f5e9;text-align:center}
   </div>
 </div>
 <script>
-const $=id=>document.getElementById(id),ls=localStorage;
+const $=id=>document.getElementById(id);
+const ls=localStorage;
 const ADMIN_PIN="0955511956";
-const FB_URL="https://seeview-rubber-default-rtdb.asia-southeast1.firebasedatabase.app/";
+const FB_URL="https://seeview-rubber-default-rtdb"
+  +".asia-southeast1.firebasedatabase.app"
+  +"/rubberData.json";
 let APP_PIN=ls.getItem('rbCustomPin')||"1234";
 const normPin=s=>String(s||"").trim()
   .replace(/[๐-๙]/g,c=>"๐๑๒๓๔๕๖๗๘๙".indexOf(c));
 const stripNum=n=>String(n||"")
   .replace(/^\d+[\.\)\-\s]+/,'').trim();
-const M=["ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.",
-  "ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค."];
-const MF=["มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม",
-  "มิถุนายน","กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม"];
+const M=["ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.",
+  "มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค."];
+const MF=["มกราคม","กุมภาพันธ์","มีนาคม",
+  "เมษายน","พฤษภาคม","มิถุนายน","กรกฎาคม",
+  "สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม"];
 
+function getThaiToday(){
+  let d=new Date(Date.now()+7*3600000);
+  return d.toISOString().slice(0,10);
+}
 function checkPin(){
   if(normPin(pinInp.value)===APP_PIN){
     ls.setItem('rbAuth',APP_PIN);
@@ -429,51 +437,62 @@ function lockApp(){
   pinInp.value="";appMain.classList.add('hide');
   loginBox.classList.remove('hide');
 }
-
 function normPlots(arr){
   return arr.map((p,idx)=>({
     id:p.id||('plot_'+(idx+1)),
     name:p.name||('แปลงที่ '+(idx+1)),
-    W:(p.W&&p.W.length?p.W:[{id:Date.now()+idx,n:"คนงาน 1",s:0}])
+    W:(p.W&&p.W.length?p.W:
+      [{id:Date.now()+idx,n:"คนงาน 1",s:0}])
       .map((x,i)=>({
-        id:x.id||(i+1),n:stripNum(x.n)||x.n,s:+x.s||0
+        id:x.id||(i+1),
+        n:stripNum(x.n)||x.n,s:+x.s||0
       })),
     H:(p.H||[]).map(x=>({
-      ...x,nt:x.nt||"",wn:stripNum(x.wn)||x.wn
+      ...x,nt:x.nt||"",
+      wn:stripNum(x.wn)||x.wn
     }))
   }));
 }
 function loadPlots(){
   try{
     let a=JSON.parse(ls.getItem('rbPlotsV1'));
-    if(Array.isArray(a)&&a.length)return normPlots(a);
+    if(Array.isArray(a)&&a.length)
+      return normPlots(a);
   }catch(e){}
   let oW=JSON.parse(ls.getItem('rbW4')||'null');
   let oH=JSON.parse(ls.getItem('rbH4')||'null');
   let p=normPlots([{
     id:'plot_1',name:'แปลงที่ 1',
-    W:oW&&oW.length?oW:[{id:1,n:"ตั้ม",s:6880},{id:2,n:"มาย",s:13760}],
+    W:oW&&oW.length?oW:
+      [{id:1,n:"ตั้ม",s:6880},{id:2,n:"มาย",s:13760}],
     H:oH||[]
   }]);
-  ls.setItem('rbPlotsV1',JSON.stringify(p));return p;
+  ls.setItem('rbPlotsV1',JSON.stringify(p));
+  return p;
 }
 let PLOTS=loadPlots();
-let curPlotId=ls.getItem('rbCurPlotId')||PLOTS[0].id;
-if(!PLOTS.some(p=>p.id===curPlotId))curPlotId=PLOTS[0].id;
-const getCurPlot=()=>PLOTS.find(x=>x.id===curPlotId)
-  ||(curPlotId=PLOTS[0].id,PLOTS[0]);
+let curPlotId=ls.getItem('rbCurPlotId')
+  ||PLOTS.at(0).id;
+if(!PLOTS.some(p=>p.id===curPlotId))
+  curPlotId=PLOTS.at(0).id;
+const getCurPlot=()=>
+  PLOTS.find(x=>x.id===curPlotId)
+  ||(curPlotId=PLOTS.at(0).id,PLOTS.at(0));
 const getW=()=>getCurPlot().W;
 const setW=a=>getCurPlot().W=a;
 const getH=()=>getCurPlot().H;
 
 let S={tot:0,inc:0,sav:0,net:0,newS:0};
-let editIdx=-1,editFromTab=4,curSlipItems=[],curTab=1;
-dt.valueAsDate=new Date();
+let editIdx=-1,editFromTab=4;
+let curSlipItems=[],curTab=1;
+dt.value=getThaiToday();
 
 function renderPlotSelector(){
-  plotBar.classList.toggle('hide',PLOTS.length<=1);
+  plotBar.classList.toggle('hide',
+    PLOTS.length<=1);
   plotSel.innerHTML=PLOTS.map(p=>
-    `<option value="${p.id}">${p.name}</option>`).join('');
+    `<option value="${p.id}">${p.name}</option>`
+  ).join('');
   plotSel.value=curPlotId;
   renamePlotInp.value=getCurPlot().name;
   admPlotName.innerText=getCurPlot().name;
@@ -484,22 +503,25 @@ function switchPlot(pid){
   renderPlotSelector();init();
   if(curTab==2){delWBox.innerHTML="";renderWList();}
   if(curTab==3){fillYears();renderYear();}
-  if(curTab==4){fillPersonDropdown();fillYears();renderPerson();}
+  if(curTab==4){
+    fillPersonDropdown();fillYears();renderPerson();
+  }
   if(curTab==5){fillYears();renderDaily();}
   if(curTab==6)initSlipPage();
 }
-
 async function syncCloud(push){
   let dirty=ls.getItem('rbDirty')==='1';
   try{
     if(push||dirty){
-      syncStatus.innerText="🔄 กำลังซิงค์ข้อมูลขึ้นออนไลน์...";
+      syncStatus.innerText=
+        "🔄 กำลังซิงค์ข้อมูลขึ้นออนไลน์...";
       let curP=getCurPlot();
       let res=await fetch(FB_URL,{
         method:'PUT',
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify({
-          appPin:APP_PIN,plots:PLOTS,W:curP.W,H:curP.H
+          appPin:APP_PIN,plots:PLOTS,
+          W:curP.W,H:curP.H
         })
       });
       if(!res.ok)throw 0;
@@ -512,23 +534,30 @@ async function syncCloud(push){
         let cp=normPin(d.appPin);
         if(cp&&cp!==APP_PIN){
           let auth=ls.getItem('rbAuth')===APP_PIN;
-          APP_PIN=cp;ls.setItem('rbCustomPin',APP_PIN);
+          APP_PIN=cp;
+          ls.setItem('rbCustomPin',APP_PIN);
           if(auth)ls.setItem('rbAuth',APP_PIN);
           curPinDisplay.innerText=APP_PIN;
         }
       }
       if(d&&Array.isArray(d.plots)&&d.plots.length){
         PLOTS=normPlots(d.plots);
-        if(!PLOTS.some(p=>p.id===curPlotId))curPlotId=PLOTS[0].id;
-        ls.setItem('rbPlotsV1',JSON.stringify(PLOTS));init();
+        if(!PLOTS.some(p=>p.id===curPlotId))
+          curPlotId=PLOTS.at(0).id;
+        ls.setItem('rbPlotsV1',JSON.stringify(PLOTS));
+        init();
         if(curTab==2)renderWList();
         if(curTab==3){fillYears();renderYear();}
-        if(curTab==4){fillPersonDropdown();fillYears();renderPerson();}
+        if(curTab==4){
+          fillPersonDropdown();
+          fillYears();renderPerson();
+        }
         if(curTab==5){fillYears();renderDaily();}
         if(curTab==6)initSlipPage();
       }else if(d&&d.W){
         PLOTS=normPlots([{
-          id:'plot_1',name:'แปลงที่ 1',W:d.W,H:d.H||[]
+          id:'plot_1',name:'แปลงที่ 1',
+          W:d.W,H:d.H||[]
         }]);
         curPlotId='plot_1';
         ls.setItem('rbPlotsV1',JSON.stringify(PLOTS));
@@ -536,14 +565,15 @@ async function syncCloud(push){
       }else if(PLOTS.length)await syncCloud(1);
     }
     let tm=new Date().toLocaleTimeString('th-TH');
-    syncStatus.innerText=`🟢 ${push?'ซิงค์ข้อมูลออนไลน์แล้ว':
+    syncStatus.innerText=`🟢 ${push?
+      'ซิงค์ข้อมูลออนไลน์แล้ว':
       'ออนไลน์พร้อมใช้งาน'} (${tm})`;
     syncStatus.style.background="#e8f5e9";
     syncStatus.style.color="#1b5e20";
   }catch(e){
     if(push)ls.setItem('rbDirty','1');
     syncStatus.innerText=
-      "🔴 ไม่มีเน็ต (บันทึกในเครื่องแล้ว รอซิงค์อัตโนมัติ)";
+      "🔴 ไม่มีเน็ต (บันทึกในเครื่องแล้ว รอซิงค์)";
     syncStatus.style.background="#ffebee";
     syncStatus.style.color="#c62828";
   }
@@ -552,7 +582,11 @@ window.addEventListener('online',()=>{
   if(ls.getItem('rbAuth')===APP_PIN)syncCloud(0);
 });
 document.addEventListener('visibilitychange',()=>{
-  if(!document.hidden&&ls.getItem('rbAuth')===APP_PIN)syncCloud(0);
+  if(!document.hidden&&
+    ls.getItem('rbAuth')===APP_PIN){
+    if(editIdx<0)dt.value=getThaiToday();
+    syncCloud(0);
+  }
 });
 setInterval(()=>{
   if(ls.getItem('rbAuth')===APP_PIN&&
@@ -573,24 +607,33 @@ function fmtThaiDate(str,short){
   return `${Number(d)} ${short?M[m-1]:MF[m-1]} `
     +`${short?String(be).slice(-2):be}`;
 }
-
 function init(){
   renderPlotSelector();let W=getW();
-  if(!W.length){setW([{id:Date.now(),n:"คนงาน 1",s:0}]);W=getW();}
+  if(!W.length){
+    setW([{id:Date.now(),n:"คนงาน 1",s:0}]);
+    W=getW();
+  }
   let v=wSel.value||0;
   wSel.innerHTML=W.map((x,i)=>
-    `<option value="${i}">${x.n}</option>`).join('');
+    `<option value="${i}">${x.n}</option>`
+  ).join('');
   wSel.value=W[v]?v:0;
   dMoSel.innerHTML=`<option value="all">ทุกเดือน</option>`+
-    MF.map((m,i)=>`<option value="${i}">${m}</option>`).join('');
+    MF.map((m,i)=>`<option value="${i}">${m}</option>`
+    ).join('');
   calc(0);
 }
 function fillPersonDropdown(){
   let W=getW(),H=getH(),cur=wHistSel.value;
-  let opts=W.map(x=>`<option value="${x.id}">${x.n}</option>`).join('');
+  let opts=W.map(x=>
+    `<option value="${x.id}">${x.n}</option>`
+  ).join('');
   if(chkShowDel?.checked){
     let ids=new Set(W.map(x=>x.id)),dm=new Map();
-    H.forEach(x=>{if(!ids.has(x.wid))dm.set(x.wid,x.wn||"คนงานเก่า");});
+    H.forEach(x=>{
+      if(!ids.has(x.wid))
+        dm.set(x.wid,x.wn||"คนงานเก่า");
+    });
     dm.forEach((n,id)=>opts+=
       `<option value="${id}">${n} (ลบแล้ว)</option>`);
   }
@@ -599,11 +642,13 @@ function fillPersonDropdown(){
     wHistSel.value=cur;
 }
 function fillYears(){
-  let yrs=[...new Set(getH().map(x=>new Date(x.d).getFullYear())
-    .filter(y=>!isNaN(y)))].sort((a,b)=>b-a);
+  let yrs=[...new Set(getH().map(x=>
+    new Date(x.d).getFullYear()).filter(y=>!isNaN(y)))]
+    .sort((a,b)=>b-a);
   if(!yrs.length)yrs=[new Date().getFullYear()];
-  let opts=yrs.map(y=>`<option value="${y}">พ.ศ. ${y+543}</option>`)
-    .join('')+`<option value="all">รวมทุกปี</option>`;
+  let opts=yrs.map(y=>
+    `<option value="${y}">พ.ศ. ${y+543}</option>`
+  ).join('')+`<option value="all">รวมทุกปี</option>`;
   [yrSel,pYrSel,dYrSel].forEach(el=>{
     let c=el.value;el.innerHTML=opts;if(c)el.value=c;
   });
@@ -614,9 +659,11 @@ function getBaseSav(i){
     ?Math.max(0,b-H[editIdx].s):b;
 }
 function calc(man){
-  let i=+wSel.value||0,tot=(+wt.value||0)*(+prc.value||0);
+  let i=+wSel.value||0;
+  let tot=(+wt.value||0)*(+prc.value||0);
   let inc=tot*(+wp.value||0)/100;
-  let sav=man?(+mSav.value||0):Math.round(inc*(+sp.value||0))/100;
+  let sav=man?(+mSav.value||0):
+    Math.round(inc*(+sp.value||0))/100;
   if(!man)mSav.value=sav;
   let base=getBaseSav(i),net=inc-sav,newS=base+sav;
   S={tot,inc,sav,net,newS};
@@ -627,7 +674,8 @@ function calc(man){
   vNew.innerText=newS.toLocaleString()+" บ.";
 }
 function save(){
-  if(!+wt.value||!+prc.value)return alert("กรุณาใส่ราคาและน้ำหนัก");
+  if(!+wt.value||!+prc.value)
+    return alert("กรุณาใส่ราคาและน้ำหนัก");
   let W=getW(),H=getH(),i=+wSel.value;
   let rec={
     wid:W[i].id,wn:W[i].n,d:dt.value,pr:+prc.value,
@@ -635,13 +683,15 @@ function save(){
     nt:editIdx>=0?(H[editIdx].nt||""):""
   };
   if(editIdx>=0){
-    let old=H[editIdx],oldW=W.find(w=>w.id===old.wid);
+    let old=H[editIdx];
+    let oldW=W.find(w=>w.id===old.wid);
     let rt=editFromTab||4,rd=dt.value;
     if(oldW&&oldW.id!==W[i].id)
       oldW.s=Math.max(0,(+oldW.s||0)-old.s);
     W[i].s=S.newS;H[editIdx]=rec;saveAllData();
     alert("บันทึกการแก้ไขเรียบร้อย!");
-    cancelEdit();tab(rt);if(rt===5)showDayDetail(rd);return;
+    cancelEdit();tab(rt);
+    if(rt===5)showDayDetail(rd);return;
   }
   W[i].s=S.newS;H.push(rec);saveAllData();
   alert("บันทึกเรียบร้อย! ยอดสะสมใหม่: "
@@ -652,7 +702,8 @@ function editLog(idx,fromTab){
   let W=getW(),item=getH()[idx];if(!item)return;
   let wIdx=W.findIndex(w=>w.id===item.wid);
   if(wIdx<0)return alert(
-    "คนงานนี้ถูกลบรายชื่อไปแล้ว กรุณากด 'ดึงคนงานเก่ากลับมา' ก่อนครับ");
+    "คนงานนี้ถูกลบรายชื่อไปแล้ว "
+    +"กรุณากด 'ดึงคนงานเก่ากลับมา' ก่อนครับ");
   editIdx=idx;editFromTab=fromTab||4;wSel.value=wIdx;
   dt.value=item.d;prc.value=item.pr;wt.value=item.w;
   wp.value=item.t?Math.round((item.i/item.t)*1000)/10:40;
@@ -665,7 +716,7 @@ function editLog(idx,fromTab){
   btnSave.className="bo";calc(1);tab(1);
 }
 function cancelEdit(){
-  editIdx=-1;wt.value="";dt.valueAsDate=new Date();
+  editIdx=-1;wt.value="";dt.value=getThaiToday();
   p1Title.innerText="🌳 จดขายขี้ยางก้อน";
   editBanner.classList.add('hide');
   btnCancelEdit.classList.add('hide');
@@ -674,8 +725,10 @@ function cancelEdit(){
 }
 function tab(n){
   curTab=n;
-  [p1,p2,p3,p4,p5,p6].forEach((e,i)=>e.classList.toggle('hide',i+1!=n));
-  [m1,m2,m3,m4,m5,m6].forEach((e,i)=>e.classList.toggle('act',i+1==n));
+  [p1,p2,p3,p4,p5,p6].forEach((e,i)=>
+    e.classList.toggle('hide',i+1!=n));
+  [m1,m2,m3,m4,m5,m6].forEach((e,i)=>
+    e.classList.toggle('act',i+1==n));
   if(n==2){delWBox.innerHTML="";renderWList();renderPlotSelector();}
   if(n==3){fillYears();renderYear();}
   if(n==4){fillPersonDropdown();fillYears();renderPerson();}
@@ -1201,7 +1254,7 @@ function deleteCurPlot(){
      !confirm(`ยืนยันครั้งสุดท้าย: ลบ "${curP.name}" ถาวร?`))
     return;
   PLOTS=PLOTS.filter(p=>p.id!==curPlotId);
-  curPlotId=PLOTS.id;saveAllData();switchPlot(curPlotId);
+  curPlotId=PLOTS.at(0).id;saveAllData();switchPlot(curPlotId);
   alert("ลบแปลงเรียบร้อยแล้วครับ");
 }
 function clearPlotWorkers(){
@@ -1247,7 +1300,7 @@ function doRestore(){
       ls.setItem('rbAuth',APP_PIN);
     }
     if(Array.isArray(d.plots)&&d.plots.length){
-      PLOTS=normPlots(d.plots);curPlotId=PLOTS.id;
+      PLOTS=normPlots(d.plots);curPlotId=PLOTS.at(0).id;
     }else if(d.W&&d.H){
       PLOTS=normPlots([{
         id:'plot_1',name:'แปลงที่ 1',W:d.W,
