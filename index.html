@@ -558,38 +558,52 @@ function getDbUrl(){
   return (u && u.startsWith('http')) ? u+'/rubberData.json' : '';
 }
 
+let isSyncing = false;
+
 async function syncCloud(push){
-  let url=getDbUrl();
+  if(isSyncing) return;
+  let url = getDbUrl();
   if(!url){
-    syncStatus.innerText="⚠️ โหมดออฟไลน์ (ยังไม่ได้ใส่ลิงก์ Firebase)";
-    syncStatus.style.background="#fff3e0";
-    syncStatus.style.color="#e65100";
+    syncStatus.innerText = "⚠️ โหมดออฟไลน์ (ยังไม่ได้ใส่ลิงก์ Firebase)";
+    syncStatus.style.background = "#fff3e0";
+    syncStatus.style.color = "#e65100";
     return;
   }
-  let hasDirty=localStorage.getItem('rbDirty')==='1';
+  isSyncing = true;
+  let hasDirty = localStorage.getItem('rbDirty') === '1';
+
   try{
     if(push || hasDirty){
-      syncStatus.innerText="🔄 กำลังซิงค์ข้อมูลขึ้นออนไลน์...";
-      syncStatus.style.background="#fff8e1";
-      syncStatus.style.color="#ef6c00";
+      syncStatus.innerText = "🔄 กำลังซิงค์ข้อมูลขึ้นออนไลน์...";
+      syncStatus.style.background = "#fff8e1";
+      syncStatus.style.color = "#ef6c00";
+
       let curP = getCurPlot();
-      let payload = { plots: PLOTS, W: curP.W, H: curP.H };
-      let res=await fetch(url,{
-        method:'PUT',
-        cache:'no-store',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify(payload)
+      // ล้างค่า undefined/NaN ออกทั้งหมดก่อนส่งขึ้น Firebase ป้องกัน Error 400
+      let cleanPayload = JSON.parse(JSON.stringify({
+        plots: PLOTS,
+        W: curP.W,
+        H: curP.H
+      }));
+
+      let res = await fetch(url, {
+        method: 'PUT',
+        cache: 'no-store',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(cleanPayload)
       });
-      if(!res.ok)throw new Error("HTTP "+res.status);
+      if(!res.ok) throw new Error("HTTP " + res.status);
+
       localStorage.removeItem('rbDirty');
       let tStr = new Date().toLocaleTimeString('th-TH');
-      syncStatus.innerText="🟢 ซิงค์ข้อมูลออนไลน์แล้ว ("+tStr+")";
-      syncStatus.style.background="#e8f5e9";
-      syncStatus.style.color="#1b5e20";
+      syncStatus.innerText = "🟢 ซิงค์ข้อมูลออนไลน์แล้ว (" + tStr + ")";
+      syncStatus.style.background = "#e8f5e9";
+      syncStatus.style.color = "#1b5e20";
     }else{
-      let res=await fetch(url,{ cache:'no-store' });
-      if(!res.ok)throw new Error("HTTP "+res.status);
-      let d=await res.json();
+      let res = await fetch(url, { cache: 'no-store' });
+      if(!res.ok) throw new Error("HTTP " + res.status);
+      let d = await res.json();
+
       if(d && Array.isArray(d.plots) && d.plots.length){
         PLOTS = d.plots.map((p,idx)=>({
           id: p.id || ('plot_'+(idx+1)),
@@ -610,11 +624,11 @@ async function syncCloud(push){
         if(!PLOTS.some(p=>p.id===curPlotId)) curPlotId = PLOTS.at(0).id;
         localStorage.setItem('rbPlotsV1', JSON.stringify(PLOTS));
         init();
-        if(curTab==2)renderWList();
-        if(curTab==3){fillYears();renderYear();}
-        if(curTab==4){fillPersonDropdown();fillYears();renderPerson();}
-        if(curTab==5){fillYears();renderDaily();}
-        if(curTab==6)initSlipPage();
+        if(curTab==2) renderWList();
+        if(curTab==3){ fillYears(); renderYear(); }
+        if(curTab==4){ fillPersonDropdown(); fillYears(); renderPerson(); }
+        if(curTab==5){ fillYears(); renderDaily(); }
+        if(curTab==6) initSlipPage();
       }else if(d && d.W){
         let cloudW = d.W.map((x,i)=>({
           id:x.id||(i+1),n:stripNum(x.n)||x.n,s:+x.s||0
@@ -626,43 +640,34 @@ async function syncCloud(push){
         curPlotId = 'plot_1';
         localStorage.setItem('rbPlotsV1', JSON.stringify(PLOTS));
         init();
+        isSyncing = false;
         await syncCloud(true);
+        return;
       }else if(PLOTS.length){
+        isSyncing = false;
         await syncCloud(true);
+        return;
       }
+
       let tStr = new Date().toLocaleTimeString('th-TH');
-      syncStatus.innerText="🟢 ออนไลน์พร้อมใช้งาน ("+tStr+")";
-      syncStatus.style.background="#e8f5e9";
-      syncStatus.style.color="#1b5e20";
+      syncStatus.innerText = "🟢 ออนไลน์พร้อมใช้งาน (" + tStr + ")";
+      syncStatus.style.background = "#e8f5e9";
+      syncStatus.style.color = "#1b5e20";
     }
   }catch(e){
-    if(push)localStorage.setItem('rbDirty','1');
-    let errDetail = e.message && e.message.startsWith('HTTP') ? e.message : 'แตะที่นี่เพื่อลองซิงค์ใหม่';
-    syncStatus.innerText="🔴 ยังซิงค์ไม่ได้ ("+errDetail+")";
-    syncStatus.style.background="#ffebee";
-    syncStatus.style.color="#c62828";
+    if(push) localStorage.setItem('rbDirty','1');
+    let errMsg = (e.message && e.message.startsWith('HTTP')) ? e.message : 'ไม่มีเน็ต/แตะเพื่อลองใหม่';
+    syncStatus.innerText = "🔴 ซิงค์ไม่ได้ (" + errMsg + ")";
+    syncStatus.style.background = "#ffebee";
+    syncStatus.style.color = "#c62828";
+  }finally{
+    isSyncing = false;
   }
 }
 
-// เพิ่มให้แตะที่แถบสถานะสีแดง/เขียวเพื่อกดบังคับซิงค์ได้ทันที
 syncStatus.style.cursor = 'pointer';
 syncStatus.onclick = () => syncCloud(localStorage.getItem('rbDirty') === '1');
 
-window.addEventListener('online',()=>{
-  if(localStorage.getItem('rbAuth')===APP_PIN)syncCloud(false);
-});
-window.addEventListener('focus',()=>{
-  if(localStorage.getItem('rbAuth')===APP_PIN)syncCloud(false);
-});
-document.addEventListener('visibilitychange',()=>{
-  if(!document.hidden && localStorage.getItem('rbAuth')===APP_PIN)
-    syncCloud(false);
-});
-setInterval(()=>{
-  if(localStorage.getItem('rbAuth')===APP_PIN &&
-    localStorage.getItem('rbDirty')==='1')
-    syncCloud(true);
-},5000);
 
 function saveAllData(){
   localStorage.setItem('rbPlotsV1', JSON.stringify(PLOTS));
