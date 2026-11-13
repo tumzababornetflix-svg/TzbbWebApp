@@ -147,7 +147,7 @@ th{background:#e8f5e9;text-align:center}
 
 @media print {
   html, body {
-    width: 100% !important;
+    width: 210mm;
     background: #fff !important;
     margin: 0 !important;
     padding: 0 !important;
@@ -156,7 +156,7 @@ th{background:#e8f5e9;text-align:center}
   #appMain, #p6 {
     display: block !important;
     max-width: none !important;
-    width: 100% !important;
+    width: 210mm !important;
     margin: 0 !important;
     padding: 0 !important;
     box-shadow: none !important;
@@ -164,16 +164,14 @@ th{background:#e8f5e9;text-align:center}
     background: #fff !important;
   }
   .slip-page {
-    width: 100%;
-    height: 268mm;
-    padding: 0;
-    margin: 0;
-    position: relative;
-    display: block !important;
+    width: 210mm;
+    height: 274mm;
+    padding: 6mm;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
     page-break-after: always;
     break-after: page;
-    page-break-inside: avoid;
-    break-inside: avoid;
     overflow: hidden;
     box-sizing: border-box;
   }
@@ -184,56 +182,33 @@ th{background:#e8f5e9;text-align:center}
   .slip-pair {
     display: grid !important;
     grid-template-columns: 1fr 1fr !important;
-    gap: 0 !important;
-    width: 264mm !important;
-    height: 184mm !important;
-    position: absolute !important;
-    top: 50% !important;
-    left: 50% !important;
-    margin: 0 !important;
-    transform: translate(-50%, -50%) rotate(90deg) !important;
-    transform-origin: center center !important;
-  }
-  .slip-pair > .slip-slot {
-    width: 132mm;
-    height: 184mm;
-    padding: 4mm 6mm;
-    box-sizing: border-box;
-    display: flex;
-  }
-  .slip-pair > .slip-slot:first-child {
-    border-right: 1px dashed #666;
+    gap: 10mm;
+    width: 260mm;
+    height: 186mm;
+    flex-shrink: 0;
+    margin: 0;
+    transform: rotate(90deg);
+    transform-origin: center center;
   }
   .slip-portrait {
     display: block !important;
-    width: 184mm;
-    height: 262mm;
-    position: absolute !important;
-    top: 50% !important;
-    left: 50% !important;
-    margin: 0 !important;
-    transform: translate(-50%, -50%) !important;
-    overflow: hidden;
+    width: 194mm;
+    height: 260mm;
+    margin: 0;
+    overflow: visible;
   }
-  .slip-portrait .slip-hdr { font-size: 20px; padding: 10px; }
-  .slip-portrait .slip-sub { font-size: 15px; margin-bottom: 8px; }
-  .slip-portrait .sum-grid { gap: 8px; margin-bottom: 10px; }
-  .slip-portrait .sum-box { padding: 8px 10px; }
-  .slip-portrait .sum-box span { font-size: 12px; }
-  .slip-portrait .sum-box b { font-size: 17px; }
-  .slip-portrait .sum-tbl { font-size: 12px; }
+  .slip-portrait .slip-hdr { font-size: 22px; padding: 12px; }
+  .slip-portrait .slip-sub { font-size: 16px; margin-bottom: 10px; }
+  .slip-portrait .sum-grid { gap: 10px; margin-bottom: 12px; }
+  .slip-portrait .sum-box { padding: 9px 12px; }
+  .slip-portrait .sum-box span { font-size: 13px; }
+  .slip-portrait .sum-box b { font-size: 19px; }
+  .slip-portrait .sum-tbl { font-size: 13px; }
   .slip-portrait .sum-tbl th,
-  .slip-portrait .sum-tbl td { padding: 6px 4px; }
+  .slip-portrait .sum-tbl td { padding: 7px 5px; }
   .slip-card { width: 100%; height: 100%; }
-  .slip-hdr { font-size: 18px; padding: 9px 6px; }
-  .slip-body { padding: 10px 12px; }
-  .slip-name { font-size: 19px; margin-bottom: 8px; }
-  .slip-line { padding: 4px 0; font-size: 14px; }
-  .slip-note { min-height: 75px; margin-top: 8px; }
 }
 </style>
-
-
 </head>
 <body>
 <div id="loginBox" class="login-box no-print">
@@ -667,6 +642,9 @@ async function syncCloud(push){
 window.addEventListener('online',()=>{if(localStorage.getItem('rbAuth')===APP_PIN)syncCloud(false);});
 document.addEventListener('visibilitychange',()=>{if(!document.hidden && localStorage.getItem('rbAuth')===APP_PIN)syncCloud(false);});
 setInterval(()=>{if(localStorage.getItem('rbAuth')===APP_PIN && localStorage.getItem('rbDirty')==='1')syncCloud(true);},15000);
+
+
+
 function saveAllData(){
   localStorage.setItem('rbPlotsV1', JSON.stringify(PLOTS));
   localStorage.setItem('rbCurPlotId', curPlotId);
@@ -895,6 +873,7 @@ function restoreOldW(wid){
   renderWList();showDeletedW();
   alert(`ดึง "${clean}" กลับมาเรียบร้อย! กด "บันทึกการแก้ไขทั้งหมด" เพื่อยืนยัน`);
 }
+
 function saveW(){
   let W = getW(), H = getH();
   let seen=new Set(),activeIds=new Set(W.map(x=>x.id));
@@ -915,6 +894,7 @@ function saveW(){
   renderWList();
   alert("บันทึกการแก้ไขเรียบร้อย!");
 }
+
 function renderYear(){
   let H = getH();
   let y=yrSel.value;
@@ -1031,7 +1011,6 @@ function delLog(idx,fromTab,dateStr){
   }else{renderPerson();}
   alert("ลบรายการและปรับยอดสะสมเรียบร้อยแล้วครับ");
 }
-
 function saveSlipPdf(){
   if(!slipPreview.querySelector('.slip-page')){
     return alert("กรุณาติ๊กเลือกอย่างน้อย 1 รายการครับ");
@@ -1055,30 +1034,11 @@ function saveSlipPdf(){
 <head>
 <meta charset="UTF-8">
 <title></title>
-<style>${styles}</style>
-</head>
-<body>${content}</body>
-</html>`);
-  doc.close();
-
-  setTimeout(()=>{
-    iframe.contentWindow.focus();
-    iframe.contentWindow.print();
-  }, 200);
-}
-
-@page {
-  size: A4 portrait;
-  margin: 0 !important;
-  @top-left { content: none; }
-  @top-center { content: none; }
-  @top-right { content: none; }
-  @bottom-left { content: none; }
-  @bottom-center { content: none; }
-  @bottom-right { content: none; }
-}
+<style>
+${styles}
+@page { size: A4 portrait; margin: 0; }
 @media print {
-   html, body {
+  html, body {
     width: 210mm;
     margin: 0 !important;
     padding: 0 !important;
@@ -1086,19 +1046,16 @@ function saveSlipPdf(){
   }
   .slip-page {
     width: 210mm;
-    height: 296mm;
-    padding: 0;
-    margin: 0;
-    position: relative;
-    display: block !important;
+    height: 274mm;
+    padding: 6mm;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
     page-break-after: always;
     break-after: page;
-    page-break-inside: avoid;
-    break-inside: avoid;
     overflow: hidden;
     box-sizing: border-box;
   }
-
   .slip-page:last-child {
     page-break-after: auto;
     break-after: auto;
@@ -1337,9 +1294,7 @@ function renderSlipPreview(){
   });
   for(let i=0;i<cards.length;i+=2){
     html+=`<div class="slip-page"><div class="slip-pair">
-      <div class="slip-slot">${cards[i]}</div>
-      <div class="slip-slot">${cards[i+1]||''}</div>
-    </div></div>`;
+      ${cards[i]}${cards[i+1]||''}</div></div>`;
   }
   if(!html){
     slipPreview.innerHTML=`<p style="color:#c62828;text-align:center">
