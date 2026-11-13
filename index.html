@@ -142,12 +142,19 @@ th{background:#e8f5e9;text-align:center}
 
 @page {
   size: A4 portrait;
-  margin: 0;
+  margin: 0 !important;
+  @top-left { content: none; }
+  @top-center { content: none; }
+  @top-right { content: none; }
+  @bottom-left { content: none; }
+  @bottom-center { content: none; }
+  @bottom-right { content: none; }
 }
 
 @media print {
   html, body {
     width: 210mm;
+    height: 297mm;
     background: #fff !important;
     margin: 0 !important;
     padding: 0 !important;
@@ -165,8 +172,9 @@ th{background:#e8f5e9;text-align:center}
   }
   .slip-page {
     width: 210mm;
-    height: 274mm;
-    padding: 6mm;
+    height: 297mm;
+    padding: 0;
+    margin: 0;
     display: flex !important;
     align-items: center;
     justify-content: center;
@@ -174,6 +182,7 @@ th{background:#e8f5e9;text-align:center}
     break-after: page;
     overflow: hidden;
     box-sizing: border-box;
+    position: relative;
   }
   .slip-page:last-child {
     page-break-after: auto;
@@ -182,19 +191,29 @@ th{background:#e8f5e9;text-align:center}
   .slip-pair {
     display: grid !important;
     grid-template-columns: 1fr 1fr !important;
-    gap: 10mm;
-    width: 260mm;
-    height: 186mm;
+    gap: 0 !important;
+    width: 297mm !important;
+    height: 210mm !important;
     flex-shrink: 0;
-    margin: 0;
+    margin: 0 !important;
     transform: rotate(90deg);
     transform-origin: center center;
+  }
+  .slip-pair > .slip-slot {
+    width: 148.5mm;
+    height: 210mm;
+    padding: 8mm;
+    box-sizing: border-box;
+    display: flex;
+  }
+  .slip-pair > .slip-slot:first-child {
+    border-right: 1px dashed #666;
   }
   .slip-portrait {
     display: block !important;
     width: 194mm;
-    height: 260mm;
-    margin: 0;
+    height: 281mm;
+    margin: 8mm auto;
     overflow: visible;
   }
   .slip-portrait .slip-hdr { font-size: 22px; padding: 12px; }
@@ -642,9 +661,6 @@ async function syncCloud(push){
 window.addEventListener('online',()=>{if(localStorage.getItem('rbAuth')===APP_PIN)syncCloud(false);});
 document.addEventListener('visibilitychange',()=>{if(!document.hidden && localStorage.getItem('rbAuth')===APP_PIN)syncCloud(false);});
 setInterval(()=>{if(localStorage.getItem('rbAuth')===APP_PIN && localStorage.getItem('rbDirty')==='1')syncCloud(true);},15000);
-
-
-
 function saveAllData(){
   localStorage.setItem('rbPlotsV1', JSON.stringify(PLOTS));
   localStorage.setItem('rbCurPlotId', curPlotId);
@@ -873,7 +889,6 @@ function restoreOldW(wid){
   renderWList();showDeletedW();
   alert(`ดึง "${clean}" กลับมาเรียบร้อย! กด "บันทึกการแก้ไขทั้งหมด" เพื่อยืนยัน`);
 }
-
 function saveW(){
   let W = getW(), H = getH();
   let seen=new Set(),activeIds=new Set(W.map(x=>x.id));
@@ -894,7 +909,6 @@ function saveW(){
   renderWList();
   alert("บันทึกการแก้ไขเรียบร้อย!");
 }
-
 function renderYear(){
   let H = getH();
   let y=yrSel.value;
@@ -1036,18 +1050,29 @@ function saveSlipPdf(){
 <title></title>
 <style>
 ${styles}
-@page { size: A4 portrait; margin: 0; }
+@page {
+  size: A4 portrait;
+  margin: 0 !important;
+  @top-left { content: none; }
+  @top-center { content: none; }
+  @top-right { content: none; }
+  @bottom-left { content: none; }
+  @bottom-center { content: none; }
+  @bottom-right { content: none; }
+}
 @media print {
   html, body {
     width: 210mm;
+    height: 297mm;
     margin: 0 !important;
     padding: 0 !important;
     background: #fff !important;
   }
   .slip-page {
     width: 210mm;
-    height: 274mm;
-    padding: 6mm;
+    height: 297mm;
+    padding: 0;
+    margin: 0;
     display: flex !important;
     align-items: center;
     justify-content: center;
@@ -1294,7 +1319,9 @@ function renderSlipPreview(){
   });
   for(let i=0;i<cards.length;i+=2){
     html+=`<div class="slip-page"><div class="slip-pair">
-      ${cards[i]}${cards[i+1]||''}</div></div>`;
+      <div class="slip-slot">${cards[i]}</div>
+      <div class="slip-slot">${cards[i+1]||''}</div>
+    </div></div>`;
   }
   if(!html){
     slipPreview.innerHTML=`<p style="color:#c62828;text-align:center">
