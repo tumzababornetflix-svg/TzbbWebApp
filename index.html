@@ -561,49 +561,33 @@ function getDbUrl(){
 let isSyncing = false;
 
 async function syncCloud(push){
-  if(isSyncing) return;
-  let url = getDbUrl();
+  let url=getDbUrl();
   if(!url){
-    syncStatus.innerText = "⚠️ โหมดออฟไลน์ (ยังไม่ได้ใส่ลิงก์ Firebase)";
-    syncStatus.style.background = "#fff3e0";
-    syncStatus.style.color = "#e65100";
+    syncStatus.innerText="⚠️ โหมดออฟไลน์ (ยังไม่ได้ใส่ลิงก์ Firebase)";
+    syncStatus.style.background="#fff3e0";
+    syncStatus.style.color="#e65100";
     return;
   }
-  isSyncing = true;
-  let hasDirty = localStorage.getItem('rbDirty') === '1';
-
+  let hasDirty=localStorage.getItem('rbDirty')==='1';
   try{
     if(push || hasDirty){
-      syncStatus.innerText = "🔄 กำลังซิงค์ข้อมูลขึ้นออนไลน์...";
-      syncStatus.style.background = "#fff8e1";
-      syncStatus.style.color = "#ef6c00";
-
+      syncStatus.innerText="🔄 กำลังซิงค์ข้อมูลขึ้นออนไลน์...";
       let curP = getCurPlot();
-      // ล้างค่า undefined/NaN ออกทั้งหมดก่อนส่งขึ้น Firebase ป้องกัน Error 400
-      let cleanPayload = JSON.parse(JSON.stringify({
-        plots: PLOTS,
-        W: curP.W,
-        H: curP.H
-      }));
-
-      let res = await fetch(url, {
-        method: 'PUT',
-        cache: 'no-store',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(cleanPayload)
+      let payload = JSON.parse(JSON.stringify({ plots: PLOTS, W: curP.W, H: curP.H }));
+      let res=await fetch(url,{
+        method:'PUT',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify(payload)
       });
-      if(!res.ok) throw new Error("HTTP " + res.status);
-
+      if(!res.ok)throw 0;
       localStorage.removeItem('rbDirty');
-      let tStr = new Date().toLocaleTimeString('th-TH');
-      syncStatus.innerText = "🟢 ซิงค์ข้อมูลออนไลน์แล้ว (" + tStr + ")";
-      syncStatus.style.background = "#e8f5e9";
-      syncStatus.style.color = "#1b5e20";
+      syncStatus.innerText="🟢 ซิงค์ข้อมูลออนไลน์แล้ว ("+new Date().toLocaleTimeString('th-TH')+")";
+      syncStatus.style.background="#e8f5e9";
+      syncStatus.style.color="#1b5e20";
     }else{
-      let res = await fetch(url, { cache: 'no-store' });
-      if(!res.ok) throw new Error("HTTP " + res.status);
-      let d = await res.json();
-
+      let res=await fetch(url);
+      if(!res.ok)throw 0;
+      let d=await res.json();
       if(d && Array.isArray(d.plots) && d.plots.length){
         PLOTS = d.plots.map((p,idx)=>({
           id: p.id || ('plot_'+(idx+1)),
@@ -624,11 +608,11 @@ async function syncCloud(push){
         if(!PLOTS.some(p=>p.id===curPlotId)) curPlotId = PLOTS.at(0).id;
         localStorage.setItem('rbPlotsV1', JSON.stringify(PLOTS));
         init();
-        if(curTab==2) renderWList();
-        if(curTab==3){ fillYears(); renderYear(); }
-        if(curTab==4){ fillPersonDropdown(); fillYears(); renderPerson(); }
-        if(curTab==5){ fillYears(); renderDaily(); }
-        if(curTab==6) initSlipPage();
+        if(curTab==2)renderWList();
+        if(curTab==3){fillYears();renderYear();}
+        if(curTab==4){fillPersonDropdown();fillYears();renderPerson();}
+        if(curTab==5){fillYears();renderDaily();}
+        if(curTab==6)initSlipPage();
       }else if(d && d.W){
         let cloudW = d.W.map((x,i)=>({
           id:x.id||(i+1),n:stripNum(x.n)||x.n,s:+x.s||0
@@ -640,34 +624,25 @@ async function syncCloud(push){
         curPlotId = 'plot_1';
         localStorage.setItem('rbPlotsV1', JSON.stringify(PLOTS));
         init();
-        isSyncing = false;
         await syncCloud(true);
-        return;
       }else if(PLOTS.length){
-        isSyncing = false;
         await syncCloud(true);
-        return;
       }
-
-      let tStr = new Date().toLocaleTimeString('th-TH');
-      syncStatus.innerText = "🟢 ออนไลน์พร้อมใช้งาน (" + tStr + ")";
-      syncStatus.style.background = "#e8f5e9";
-      syncStatus.style.color = "#1b5e20";
+      syncStatus.innerText="🟢 ออนไลน์พร้อมใช้งาน ("+new Date().toLocaleTimeString('th-TH')+")";
+      syncStatus.style.background="#e8f5e9";
+      syncStatus.style.color="#1b5e20";
     }
-
   }catch(e){
-    if(push) localStorage.setItem('rbDirty','1');
-    syncStatus.innerText = "🔴 Error: " + (e.message || e);
-    syncStatus.style.background = "#ffebee";
-    syncStatus.style.color = "#c62828";
-  }finally{
-
-    isSyncing = false;
+    if(push)localStorage.setItem('rbDirty','1');
+    syncStatus.innerText="🔴 ไม่มีเน็ต (บันทึกในเครื่องแล้ว รอซิงค์อัตโนมัติ)";
+    syncStatus.style.background="#ffebee";
+    syncStatus.style.color="#c62828";
   }
 }
+window.addEventListener('online',()=>{if(localStorage.getItem('rbAuth')===APP_PIN)syncCloud(false);});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden && localStorage.getItem('rbAuth')===APP_PIN)syncCloud(false);});
+setInterval(()=>{if(localStorage.getItem('rbAuth')===APP_PIN && localStorage.getItem('rbDirty')==='1')syncCloud(true);},15000);
 
-syncStatus.style.cursor = 'pointer';
-syncStatus.onclick = () => syncCloud(localStorage.getItem('rbDirty') === '1');
 
 
 function saveAllData(){
@@ -1495,29 +1470,6 @@ if(localStorage.getItem('rbAuth') === APP_PIN){
   appMain.classList.remove('hide');
   init();
   syncCloud(false);
-}
-
-if ('serviceWorker' in navigator && window.location.protocol.startsWith('http')) {
-  const swCode = `
-    const CACHE = 'rubber-offline-v2';
-    self.addEventListener('install', e => {
-      self.skipWaiting();
-      e.waitUntil(caches.open(CACHE).then(c => c.addAll([self.location.href])));
-    });
-    self.addEventListener('activate', e => e.waitUntil(clients.claim()));
-    self.addEventListener('fetch', e => {
-      if (e.request.url.includes('firebasedatabase.app')) return;
-      e.respondWith(
-        fetch(e.request).then(res => {
-          let copy = res.clone();
-          caches.open(CACHE).then(c => c.put(e.request, copy));
-          return res;
-        }).catch(() => caches.match(e.request))
-      );
-    });
-  `;
-  const blob = new Blob([swCode], { type: 'application/javascript' });
-  navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(() => {});
 }
 </script>
 </body>
