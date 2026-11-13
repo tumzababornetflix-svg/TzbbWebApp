@@ -154,7 +154,6 @@ th{background:#e8f5e9;text-align:center}
 @media print {
   html, body {
     width: 210mm;
-    height: 297mm;
     background: #fff !important;
     margin: 0 !important;
     padding: 0 !important;
@@ -172,17 +171,17 @@ th{background:#e8f5e9;text-align:center}
   }
   .slip-page {
     width: 210mm;
-    height: 297mm;
+    height: 296mm;
     padding: 0;
     margin: 0;
-    display: flex !important;
-    align-items: center;
-    justify-content: center;
+    position: relative;
+    display: block !important;
     page-break-after: always;
     break-after: page;
+    page-break-inside: avoid;
+    break-inside: avoid;
     overflow: hidden;
     box-sizing: border-box;
-    position: relative;
   }
   .slip-page:last-child {
     page-break-after: auto;
@@ -192,15 +191,17 @@ th{background:#e8f5e9;text-align:center}
     display: grid !important;
     grid-template-columns: 1fr 1fr !important;
     gap: 0 !important;
-    width: 297mm !important;
+    width: 296mm !important;
     height: 210mm !important;
-    flex-shrink: 0;
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
     margin: 0 !important;
-    transform: rotate(90deg);
-    transform-origin: center center;
+    transform: translate(-50%, -50%) rotate(90deg) !important;
+    transform-origin: center center !important;
   }
   .slip-pair > .slip-slot {
-    width: 148.5mm;
+    width: 148mm;
     height: 210mm;
     padding: 8mm;
     box-sizing: border-box;
@@ -212,8 +213,12 @@ th{background:#e8f5e9;text-align:center}
   .slip-portrait {
     display: block !important;
     width: 194mm;
-    height: 281mm;
-    margin: 8mm auto;
+    height: 280mm;
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    margin: 0 !important;
+    transform: translate(-50%, -50%) !important;
     overflow: visible;
   }
   .slip-portrait .slip-hdr { font-size: 22px; padding: 12px; }
@@ -228,6 +233,7 @@ th{background:#e8f5e9;text-align:center}
   .slip-card { width: 100%; height: 100%; }
 }
 </style>
+
 </head>
 <body>
 <div id="loginBox" class="login-box no-print">
@@ -1061,26 +1067,27 @@ ${styles}
   @bottom-right { content: none; }
 }
 @media print {
-  html, body {
+   html, body {
     width: 210mm;
-    height: 297mm;
     margin: 0 !important;
     padding: 0 !important;
     background: #fff !important;
   }
   .slip-page {
     width: 210mm;
-    height: 297mm;
+    height: 296mm;
     padding: 0;
     margin: 0;
-    display: flex !important;
-    align-items: center;
-    justify-content: center;
+    position: relative;
+    display: block !important;
     page-break-after: always;
     break-after: page;
+    page-break-inside: avoid;
+    break-inside: avoid;
     overflow: hidden;
     box-sizing: border-box;
   }
+
   .slip-page:last-child {
     page-break-after: auto;
     break-after: auto;
