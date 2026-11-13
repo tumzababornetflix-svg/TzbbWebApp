@@ -735,6 +735,7 @@ function tab(n){
   if(n==5){fillYears();renderDaily();}
   if(n==6)initSlipPage();
 }
+
 function renderWList(){
   wList.innerHTML=getW().map((x,i)=>`
   <div class="w-card">
@@ -747,10 +748,11 @@ function renderWList(){
     </div>
     <label style="font-size:15px;margin:2px 0">
       ยอดสะสมคงเหลือ (บาท)</label>
-    <input type="number" id="es${i}"
-      class="yel" value="${x.s}">
+    <input type="number" step="0.01" id="es${i}"
+      class="yel" value="${(+x.s||0).toFixed(2)}">
   </div>`).join('');
 }
+
 function syncWInputs(){
   getW().forEach((x,i)=>{
     let a=$('en'+i),b=$('es'+i);
