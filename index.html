@@ -426,7 +426,7 @@ th{background:#e8f5e9;text-align:center}
 <script>
 const APP_PIN = "1234";
 const ADMIN_PIN = "0955511956";
-const FB_URL = "https://firebasedatabase.app";
+const FB_URL = "https://seeview-rubber-default-rtdb.asia-southeast1.firebasedatabase.app/";
 
 function normPin(s){
   return String(s||"").trim()
@@ -654,13 +654,14 @@ async function syncCloud(push){
       syncStatus.style.background = "#e8f5e9";
       syncStatus.style.color = "#1b5e20";
     }
+
   }catch(e){
     if(push) localStorage.setItem('rbDirty','1');
-    let errMsg = (e.message && e.message.startsWith('HTTP')) ? e.message : 'ไม่มีเน็ต/แตะเพื่อลองใหม่';
-    syncStatus.innerText = "🔴 ซิงค์ไม่ได้ (" + errMsg + ")";
+    syncStatus.innerText = "🔴 Error: " + (e.message || e);
     syncStatus.style.background = "#ffebee";
     syncStatus.style.color = "#c62828";
   }finally{
+
     isSyncing = false;
   }
 }
