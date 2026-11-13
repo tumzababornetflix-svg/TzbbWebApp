@@ -139,74 +139,43 @@ th{background:#e8f5e9;text-align:center}
 }
 .admin-sec h3{margin:0 0 8px;font-size:16px;color:#263238}
 .hide{display:none!important}
-
-@page {
-  size: A4 portrait;
-  margin: 0;
-}
-
-@media print {
-  html, body {
-    width: 210mm;
-    background: #fff !important;
-    margin: 0 !important;
-    padding: 0 !important;
+@page{size:A4 portrait;margin:0}
+@media print{
+  html,body{
+    width:210mm;background:#fff!important;
+    margin:0!important;padding:0!important
   }
-  .no-print { display: none !important; }
-  #appMain, #p6 {
-    display: block !important;
-    max-width: none !important;
-    width: 210mm !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    box-shadow: none !important;
-    border-radius: 0 !important;
-    background: #fff !important;
+  .no-print{display:none!important}
+  #appMain,#p6{
+    display:block!important;max-width:none!important;
+    width:210mm!important;margin:0!important;padding:0!important;
+    box-shadow:none!important;border-radius:0!important;background:#fff!important
   }
-  .slip-page {
-    width: 210mm;
-    height: 274mm;
-    padding: 6mm;
-    display: flex !important;
-    align-items: center;
-    justify-content: center;
-    page-break-after: always;
-    break-after: page;
-    overflow: hidden;
-    box-sizing: border-box;
+  .slip-page{
+    width:210mm;height:274mm;padding:6mm;display:flex!important;
+    align-items:center;justify-content:center;
+    page-break-after:always;break-after:page;
+    overflow:hidden;box-sizing:border-box
   }
-  .slip-page:last-child {
-    page-break-after: auto;
-    break-after: auto;
+  .slip-page:last-child{page-break-after:auto;break-after:auto}
+  .slip-pair{
+    display:grid!important;grid-template-columns:1fr 1fr!important;
+    gap:10mm;width:260mm;height:186mm;flex-shrink:0;margin:0;
+    transform:rotate(90deg);transform-origin:center center
   }
-  .slip-pair {
-    display: grid !important;
-    grid-template-columns: 1fr 1fr !important;
-    gap: 10mm;
-    width: 260mm;
-    height: 186mm;
-    flex-shrink: 0;
-    margin: 0;
-    transform: rotate(90deg);
-    transform-origin: center center;
+  .slip-portrait{
+    display:block!important;width:194mm;height:260mm;
+    margin:0;overflow:visible
   }
-  .slip-portrait {
-    display: block !important;
-    width: 194mm;
-    height: 260mm;
-    margin: 0;
-    overflow: visible;
-  }
-  .slip-portrait .slip-hdr { font-size: 22px; padding: 12px; }
-  .slip-portrait .slip-sub { font-size: 16px; margin-bottom: 10px; }
-  .slip-portrait .sum-grid { gap: 10px; margin-bottom: 12px; }
-  .slip-portrait .sum-box { padding: 9px 12px; }
-  .slip-portrait .sum-box span { font-size: 13px; }
-  .slip-portrait .sum-box b { font-size: 19px; }
-  .slip-portrait .sum-tbl { font-size: 13px; }
-  .slip-portrait .sum-tbl th,
-  .slip-portrait .sum-tbl td { padding: 7px 5px; }
-  .slip-card { width: 100%; height: 100%; }
+  .slip-portrait .slip-hdr{font-size:22px;padding:12px}
+  .slip-portrait .slip-sub{font-size:16px;margin-bottom:10px}
+  .slip-portrait .sum-grid{gap:10px;margin-bottom:12px}
+  .slip-portrait .sum-box{padding:9px 12px}
+  .slip-portrait .sum-box span{font-size:13px}
+  .slip-portrait .sum-box b{font-size:19px}
+  .slip-portrait .sum-tbl{font-size:13px}
+  .slip-portrait .sum-tbl th,.slip-portrait .sum-tbl td{padding:7px 5px}
+  .slip-card{width:100%;height:100%}
 }
 </style>
 </head>
@@ -226,500 +195,428 @@ th{background:#e8f5e9;text-align:center}
 </div>
 
 <div id="appMain" class="hide">
-<div class="box no-print" style="padding:8px">
-  <div class="top-bar">
-    <div id="syncStatus" class="sync-bar">
-      ⏳ กำลังเชื่อมต่อฐานข้อมูลออนไลน์...</div>
-    <button type="button" class="lock-btn"
-      onclick="lockApp()">🔒 ล็อก</button>
-  </div>
-  <div id="plotBar" class="plot-bar hide">
-    <span>🌳 แปลง:</span>
-    <select id="plotSel" onchange="switchPlot(this.value)"></select>
-  </div>
-  <div class="g2">
-    <button type="button" id="m1" class="bm act"
-      onclick="tab(1)">📝 จดขายยาง</button>
-    <button type="button" id="m2" class="bm"
-      onclick="tab(2)">💰 คนงาน/สะสม</button>
-    <button type="button" id="m3" class="bm"
-      onclick="tab(3)">📊 สรุปรายปี</button>
-    <button type="button" id="m4" class="bm"
-      onclick="tab(4)">👤 ยอดรายคน</button>
-    <button type="button" id="m5" class="bm"
-      onclick="tab(5)">📅 ประวัติรายวัน</button>
-    <button type="button" id="m6" class="bm"
-      onclick="tab(6)">🖨️ พิมพ์สลิป</button>
-  </div>
-</div>
-
-<div id="p1" class="box no-print">
-  <h2 id="p1Title">🌳 จดขายขี้ยางก้อน</h2>
-  <div id="editBanner" class="edit-banner hide">
-    ✏️ กำลังแก้ไขรายการเก่า (บันทึกแล้วจะปรับยอดให้อัตโนมัติ)
-  </div>
-  <label>วันที่ขาย</label><input type="date" id="dt">
-  <label>ชื่อคนงาน</label><select id="wSel" onchange="calc(0)"></select>
-  <label>ราคายาง (บาท/กก.)</label>
-  <input type="number" inputmode="decimal" id="prc"
-    placeholder="เช่น 42" oninput="calc(0)">
-  <label>น้ำหนักยาง (กิโลกรัม)</label>
-  <input type="number" inputmode="decimal" id="wt"
-    placeholder="เช่น 1000" oninput="calc(0)">
-  <div class="g2">
-    <div>
-      <label>คนงาน (%)</label>
-      <input type="number" inputmode="numeric" id="wp"
-        value="40" oninput="calc(0)">
+  <div class="box no-print" style="padding:8px">
+    <div class="top-bar">
+      <div id="syncStatus" class="sync-bar">
+        ⏳ กำลังเชื่อมต่อฐานข้อมูลออนไลน์...</div>
+      <button type="button" class="lock-btn"
+        onclick="lockApp()">🔒 ล็อก</button>
     </div>
-    <div>
-      <label>หักสะสม (%)</label>
-      <input type="number" inputmode="numeric" id="sp"
-        value="10" oninput="calc(0)">
+    <div id="plotBar" class="plot-bar hide">
+      <span>🌳 แปลง:</span>
+      <select id="plotSel" onchange="switchPlot(this.value)"></select>
+    </div>
+    <div class="g2">
+      <button type="button" id="m1" class="bm act"
+        onclick="tab(1)">📝 จดขายยาง</button>
+      <button type="button" id="m2" class="bm"
+        onclick="tab(2)">💰 คนงาน/สะสม</button>
+      <button type="button" id="m3" class="bm"
+        onclick="tab(3)">📊 สรุปรายปี</button>
+      <button type="button" id="m4" class="bm"
+        onclick="tab(4)">👤 ยอดรายคน</button>
+      <button type="button" id="m5" class="bm"
+        onclick="tab(5)">📅 ประวัติรายวัน</button>
+      <button type="button" id="m6" class="bm"
+        onclick="tab(6)">🖨️ พิมพ์สลิป</button>
     </div>
   </div>
-  <div class="row"><span>ยอดขายรวม:</span><b id="vTot">0 บ.</b></div>
-  <div class="row"><span>รายได้คนงาน:</span><b id="vInc">0 บ.</b></div>
-  <label style="color:#e65100">หักสะสมครั้งนี้ (แก้ตัวเลขเองได้)</label>
-  <input type="number" inputmode="decimal" id="mSav"
-    class="yel" value="0" oninput="calc(1)">
-  <div class="row"><span>จ่ายสุทธิ:</span>
-    <span class="big" id="vNet">0 บ.</span></div>
-  <div class="row" style="border:0">
-    <span>สะสมเดิม (<span id="vOld">0</span>) ➔ ใหม่:</span>
-    <b style="color:#0d47a1" id="vNew">0 บ.</b>
-  </div>
-  <button type="button" id="btnSave" class="bg"
-    onclick="save()">💾 บันทึกยอดเงินนี้</button>
-  <button type="button" id="btnCancelEdit" class="br hide"
-    onclick="cancelEdit()">❌ ยกเลิกการแก้ไข</button>
-</div>
 
-<div id="p2" class="box hide no-print">
-  <h2>💰 จัดการรายชื่อและยอดสะสม</h2>
-  <div id="wList"></div>
-  <button type="button" class="bb"
-    onclick="addW()">➕ เพิ่มคนงานใหม่</button>
-  <button type="button" class="bo"
-    onclick="showDeletedW()">♻️ ดึงคนงานเก่าที่ลบไปแล้วกลับมา</button>
-  <div id="delWBox"></div>
-  <button type="button" class="bg"
-    onclick="saveW()">💾 บันทึกการแก้ไขทั้งหมด</button>
-
-  <div style="text-align:center;margin-top:24px">
-    <span id="btnAdminToggle"
-      style="font-size:12px;color:#999;cursor:pointer"
-      onclick="toggleAdminPanel()">⚙️ ตั้งค่าขั้นสูง</span>
-  </div>
-
-  <div id="adminPanel" class="admin-box hide">
-    <div style="display:flex;justify-content:space-between;
-      align-items:center;margin-bottom:10px">
-      <b style="color:#263238;font-size:16px">🔐 โหมดผู้ดูแลระบบ</b>
-      <button type="button" class="br"
-        style="width:auto;margin:0;padding:4px 10px;font-size:13px"
-        onclick="closeAdminPanel()">🔒 ปิดโหมดแอดมิน</button>
+  <div id="p1" class="box no-print">
+    <h2 id="p1Title">🌳 จดขายขี้ยางก้อน</h2>
+    <div id="editBanner" class="edit-banner hide">
+      ✏️ กำลังแก้ไขรายการเก่า (บันทึกแล้วจะปรับยอดให้อัตโนมัติ)
     </div>
+    <label>วันที่ขาย</label><input type="date" id="dt">
+    <label>ชื่อคนงาน</label><select id="wSel" onchange="calc(0)"></select>
+    <label>ราคายาง (บาท/กก.)</label>
+    <input type="number" inputmode="decimal" id="prc"
+      placeholder="เช่น 42" oninput="calc(0)">
+    <label>น้ำหนักยาง (กิโลกรัม)</label>
+    <input type="number" inputmode="decimal" id="wt"
+      placeholder="เช่น 1000" oninput="calc(0)">
+    <div class="g2">
+      <div><label>คนงาน (%)</label>
+        <input type="number" inputmode="numeric" id="wp"
+          value="40" oninput="calc(0)"></div>
+      <div><label>หักสะสม (%)</label>
+        <input type="number" inputmode="numeric" id="sp"
+          value="10" oninput="calc(0)"></div>
+    </div>
+    <div class="row"><span>ยอดขายรวม:</span><b id="vTot">0 บ.</b></div>
+    <div class="row"><span>รายได้คนงาน:</span><b id="vInc">0 บ.</b></div>
+    <label style="color:#e65100">หักสะสมครั้งนี้ (แก้ตัวเลขเองได้)</label>
+    <input type="number" inputmode="decimal" id="mSav"
+      class="yel" value="0" oninput="calc(1)">
+    <div class="row"><span>จ่ายสุทธิ:</span>
+      <span class="big" id="vNet">0 บ.</span></div>
+    <div class="row" style="border:0">
+      <span>สะสมเดิม (<span id="vOld">0</span>) ➔ ใหม่:</span>
+      <b style="color:#0d47a1" id="vNew">0 บ.</b>
+    </div>
+    <button type="button" id="btnSave" class="bg"
+      onclick="save()">💾 บันทึกยอดเงินนี้</button>
+    <button type="button" id="btnCancelEdit" class="br hide"
+      onclick="cancelEdit()">❌ ยกเลิกการแก้ไข</button>
+  </div>
 
-    <div class="admin-sec">
-      <h3>🌳 จัดการแปลงขายยาง</h3>
-      <label style="font-size:14px;margin-top:4px">
-        ชื่อแปลงที่กำลังเลือกอยู่:</label>
-      <div style="display:flex;gap:6px">
-        <input type="text" id="renamePlotInp"
-          style="font-size:16px;padding:8px" placeholder="ชื่อแปลง">
-        <button type="button" class="bg"
-          style="width:auto;margin:0;padding:8px 12px;white-space:nowrap"
-          onclick="renameCurPlot()">💾 บันทึกชื่อ</button>
+  <div id="p2" class="box hide no-print">
+    <h2>💰 จัดการรายชื่อและยอดสะสม</h2>
+    <div id="wList"></div>
+    <button type="button" class="bb"
+      onclick="addW()">➕ เพิ่มคนงานใหม่</button>
+    <button type="button" class="bo"
+      onclick="showDeletedW()">♻️ ดึงคนงานเก่าที่ลบไปแล้วกลับมา</button>
+    <div id="delWBox"></div>
+    <button type="button" class="bg"
+      onclick="saveW()">💾 บันทึกการแก้ไขทั้งหมด</button>
+    <div style="text-align:center;margin-top:24px">
+      <span id="btnAdminToggle"
+        style="font-size:12px;color:#999;cursor:pointer"
+        onclick="toggleAdminPanel()">⚙️ ตั้งค่าขั้นสูง</span>
+    </div>
+    <div id="adminPanel" class="admin-box hide">
+      <div style="display:flex;justify-content:space-between;
+        align-items:center;margin-bottom:10px">
+        <b style="color:#263238;font-size:16px">🔐 โหมดผู้ดูแลระบบ</b>
+        <button type="button" class="br"
+          style="width:auto;margin:0;padding:4px 10px;font-size:13px"
+          onclick="closeAdminPanel()">🔒 ปิดโหมดแอดมิน</button>
       </div>
+      <div class="admin-sec">
+        <h3>🔑 เปลี่ยนรหัสผ่านบัญชี (App PIN)</h3>
+        <label style="font-size:14px;margin-top:4px">
+          รหัสผ่านเข้าใช้งานใหม่ (ตัวเลข 4 หลักขึ้นไป):</label>
+        <div style="display:flex;gap:6px">
+          <input type="text" inputmode="numeric" id="newPinInp"
+            style="font-size:16px;padding:8px" placeholder="เช่น 5678">
+          <button type="button" class="bg"
+            style="width:auto;margin:0;padding:8px 12px;white-space:nowrap"
+            onclick="changeAppPin()">💾 บันทึกรหัส</button>
+        </div>
+        <div style="font-size:12px;color:#546e7a;margin-top:6px">
+          * รหัสผ่านปัจจุบัน: <b id="curPinDisplay"></b>
+          (ซิงค์อัตโนมัติทุกเครื่อง)
+        </div>
+      </div>
+      <div class="admin-sec">
+        <h3>🌳 จัดการแปลงขายยาง</h3>
+        <label style="font-size:14px;margin-top:4px">
+          ชื่อแปลงที่กำลังเลือกอยู่:</label>
+        <div style="display:flex;gap:6px">
+          <input type="text" id="renamePlotInp"
+            style="font-size:16px;padding:8px" placeholder="ชื่อแปลง">
+          <button type="button" class="bg"
+            style="width:auto;margin:0;padding:8px 12px;white-space:nowrap"
+            onclick="renameCurPlot()">💾 บันทึกชื่อ</button>
+        </div>
+        <div class="g2" style="margin-top:8px">
+          <button type="button" class="bb" style="margin:0;font-size:14px"
+            onclick="addNewPlot()">➕ เพิ่มแปลงใหม่</button>
+          <button type="button" class="br" style="margin:0;font-size:14px"
+            onclick="deleteCurPlot()">🗑️ ลบแปลงนี้</button>
+        </div>
+      </div>
+      <div class="admin-sec">
+        <h3>🧹 ล้างข้อมูล (เฉพาะแปลง:
+          <span id="admPlotName" style="color:#1b5e20"></span>)</h3>
+        <button type="button" class="bo" style="font-size:14px"
+          onclick="clearPlotWorkers()">
+          1. ล้างข้อมูลชื่อคนงาน (แปลงนี้)</button>
+        <button type="button" class="bo" style="font-size:14px"
+          onclick="clearPlotHistory()">
+          2. ล้างข้อมูลการขายทั้งหมด (คงยอดสะสมเดิม)</button>
+        <button type="button" class="br" style="font-size:14px"
+          onclick="factoryResetPlot()">
+          3. ล้างข้อมูลทั้งหมด (Factory Reset แปลงนี้)</button>
+      </div>
+      <div class="admin-sec" style="margin-bottom:0">
+        <h3>📦 สำรอง / กู้คืนข้อมูลทั้งระบบ</h3>
+        <button type="button" class="bb" style="font-size:14px"
+          onclick="doBackup()">📤 คัดลอกข้อมูลสำรอง (Backup)</button>
+        <label style="font-size:14px;margin-top:10px">
+          วางรหัสข้อมูลสำรองเพื่อกู้คืน:</label>
+        <textarea id="bkBox" rows="3" class="yel" style="font-size:13px"
+          placeholder="วางรหัสที่เคยคัดลอกไว้ที่นี่..."></textarea>
+        <button type="button" class="br" style="font-size:14px"
+          onclick="doRestore()">📥 นำเข้าข้อมูลกู้คืน (Restore)</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="p3" class="box hide no-print" style="overflow-x:auto">
+    <h2>📊 สรุปยอดขายรายปี</h2>
+    <label>เลือกปี พ.ศ.</label>
+    <select id="yrSel" onchange="renderYear()"></select>
+    <div id="yrSum"></div>
+  </div>
+
+  <div id="p4" class="box hide no-print" style="overflow-x:auto">
+    <h2>👤 ยอดรายคนย้อนหลัง</h2>
+    <label class="chk-row"
+      style="padding:8px 10px;margin-bottom:6px;font-size:15px">
+      <input type="checkbox" id="chkShowDel"
+        onchange="fillPersonDropdown();renderPerson()">
+      <span>แสดงรายชื่อคนงานที่ลบไปแล้ว</span>
+    </label>
+    <div class="g2">
+      <div><label>ชื่อคนงาน</label>
+        <select id="wHistSel" onchange="renderPerson()"></select></div>
+      <div><label>ปี พ.ศ.</label>
+        <select id="pYrSel" onchange="renderPerson()"></select></div>
+    </div>
+    <div id="personSum"></div>
+  </div>
+
+  <div id="p5" class="box hide no-print" style="overflow-x:auto">
+    <h2>📅 ประวัติการขายรายวัน</h2>
+    <div class="g2">
+      <div><label>ปี พ.ศ.</label>
+        <select id="dYrSel" onchange="renderDaily()"></select></div>
+      <div><label>เดือน</label>
+        <select id="dMoSel" onchange="renderDaily()"></select></div>
+    </div>
+    <div id="dailySum"></div><div id="dailyDetail"></div>
+  </div>
+
+  <div id="p6" class="box hide">
+    <div class="no-print">
+      <h2>🖨️ พิมพ์สลิป / บันทึก PDF</h2>
+      <label>เลือกวันที่ขาย</label>
+      <select id="prDateSel" onchange="renderSlipList()"></select>
       <div class="g2" style="margin-top:8px">
-        <button type="button" class="bb" style="margin:0;font-size:14px"
-          onclick="addNewPlot()">➕ เพิ่มแปลงใหม่</button>
-        <button type="button" class="br" style="margin:0;font-size:14px"
-          onclick="deleteCurPlot()">🗑️ ลบแปลงนี้</button>
+        <button type="button" class="bb" style="margin:0"
+          onclick="toggleAllSlips(true)">☑️ ติ๊กเลือกทั้งหมด</button>
+        <button type="button" class="bo" style="margin:0"
+          onclick="toggleAllSlips(false)">⬜ ยกเลิกทั้งหมด</button>
       </div>
+      <div id="slipChkList" style="margin-top:10px"></div>
+      <button type="button" id="btnPdf" class="bg"
+        onclick="saveSlipPdf()">📥 พิมพ์ / บันทึกสลิปเป็น PDF</button>
+      <hr style="margin:15px 0;border:1px dashed #ccc">
     </div>
-
-    <div class="admin-sec">
-      <h3>🧹 ล้างข้อมูล (เฉพาะแปลง:
-        <span id="admPlotName" style="color:#1b5e20"></span>)</h3>
-      <button type="button" class="bo" style="font-size:14px"
-        onclick="clearPlotWorkers()">
-        1. ล้างข้อมูลชื่อคนงาน (แปลงนี้)</button>
-      <button type="button" class="bo" style="font-size:14px"
-        onclick="clearPlotHistory()">
-        2. ล้างข้อมูลการขายทั้งหมด (คงยอดสะสมเดิม)</button>
-      <button type="button" class="br" style="font-size:14px"
-        onclick="factoryResetPlot()">
-        3. ล้างข้อมูลทั้งหมด (Factory Reset แปลงนี้)</button>
-    </div>
-
-    <div class="admin-sec" style="margin-bottom:0">
-      <h3>📦 สำรอง / กู้คืนข้อมูลทั้งระบบ</h3>
-      <button type="button" class="bb" style="font-size:14px"
-        onclick="doBackup()">📤 คัดลอกข้อมูลสำรอง (Backup)</button>
-      <label style="font-size:14px;margin-top:10px">
-        วางรหัสข้อมูลสำรองเพื่อกู้คืน:</label>
-      <textarea id="bkBox" rows="3" class="yel" style="font-size:13px"
-        placeholder="วางรหัสที่เคยคัดลอกไว้ที่นี่..."></textarea>
-      <button type="button" class="br" style="font-size:14px"
-        onclick="doRestore()">📥 นำเข้าข้อมูลกู้คืน (Restore)</button>
-    </div>
+    <div id="slipPreview"></div>
   </div>
-</div>
-
-<div id="p3" class="box hide no-print" style="overflow-x:auto">
-  <h2>📊 สรุปยอดขายรายปี</h2>
-  <label>เลือกปี พ.ศ.</label>
-  <select id="yrSel" onchange="renderYear()"></select>
-  <div id="yrSum"></div>
-</div>
-
-<div id="p4" class="box hide no-print" style="overflow-x:auto">
-  <h2>👤 ยอดรายคนย้อนหลัง</h2>
-  <label class="chk-row"
-    style="padding:8px 10px;margin-bottom:6px;font-size:15px">
-    <input type="checkbox" id="chkShowDel"
-      onchange="fillPersonDropdown();renderPerson()">
-    <span>แสดงรายชื่อคนงานที่ลบไปแล้ว</span>
-  </label>
-  <div class="g2">
-    <div><label>ชื่อคนงาน</label>
-      <select id="wHistSel" onchange="renderPerson()"></select></div>
-    <div><label>ปี พ.ศ.</label>
-      <select id="pYrSel" onchange="renderPerson()"></select></div>
-  </div>
-  <div id="personSum"></div>
-</div>
-
-<div id="p5" class="box hide no-print" style="overflow-x:auto">
-  <h2>📅 ประวัติการขายรายวัน</h2>
-  <div class="g2">
-    <div><label>ปี พ.ศ.</label>
-      <select id="dYrSel" onchange="renderDaily()"></select></div>
-    <div><label>เดือน</label>
-      <select id="dMoSel" onchange="renderDaily()"></select></div>
-  </div>
-  <div id="dailySum"></div>
-  <div id="dailyDetail"></div>
-</div>
-
-<div id="p6" class="box hide">
-  <div class="no-print">
-    <h2>🖨️ พิมพ์สลิป / บันทึก PDF</h2>
-    <label>เลือกวันที่ขาย</label>
-    <select id="prDateSel" onchange="renderSlipList()"></select>
-    <div class="g2" style="margin-top:8px">
-      <button type="button" class="bb" style="margin:0"
-        onclick="toggleAllSlips(true)">☑️ ติ๊กเลือกทั้งหมด</button>
-      <button type="button" class="bo" style="margin:0"
-        onclick="toggleAllSlips(false)">⬜ ยกเลิกทั้งหมด</button>
-    </div>
-    <div id="slipChkList" style="margin-top:10px"></div>
-    <button type="button" id="btnPdf" class="bg"
-      onclick="saveSlipPdf()">📥 พิมพ์ / บันทึกสลิปเป็น PDF</button>
-    <hr style="margin:15px 0;border:1px dashed #ccc">
-  </div>
-  <div id="slipPreview"></div>
-</div>
 </div>
 <script>
-const APP_PIN = "1234";
-const ADMIN_PIN = "0955511956";
-const FB_URL = "https://seeview-rubber-default-rtdb.asia-southeast1.firebasedatabase.app/";
+const $=id=>document.getElementById(id),ls=localStorage;
+const ADMIN_PIN="0955511956";
+const FB_URL="https://firebasedatabase.app";
+let APP_PIN=ls.getItem('rbCustomPin')||"1234";
+const normPin=s=>String(s||"").trim()
+  .replace(/[๐-๙]/g,c=>"๐๑๒๓๔๕๖๗๘๙".indexOf(c));
+const stripNum=n=>String(n||"")
+  .replace(/^\d+[\.\)\-\s]+/,'').trim();
+const M=["ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.",
+  "ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค."];
+const MF=["มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม",
+  "มิถุนายน","กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม"];
 
-function normPin(s){
-  return String(s||"").trim()
-    .replace(/[๐-๙]/g, c => "๐๑๒๓๔๕๖๗๘๙".indexOf(c));
-}
 function checkPin(){
-  let val = normPin(pinInp.value);
-  if(val === APP_PIN){
-    localStorage.setItem('rbAuth', APP_PIN);
+  if(normPin(pinInp.value)===APP_PIN){
+    ls.setItem('rbAuth',APP_PIN);
     pinErr.classList.add('hide');
     loginBox.classList.add('hide');
     appMain.classList.remove('hide');
-    init();
-    syncCloud(false);
+    init();syncCloud(0);
   }else{
     pinErr.classList.remove('hide');
-    pinInp.value="";
-    pinInp.focus();
+    pinInp.value="";pinInp.focus();
   }
 }
 function lockApp(){
-  localStorage.removeItem('rbAuth');
-  closeAdminPanel();
-  pinInp.value="";
-  appMain.classList.add('hide');
+  ls.removeItem('rbAuth');closeAdminPanel();
+  pinInp.value="";appMain.classList.add('hide');
   loginBox.classList.remove('hide');
 }
 
-const M=["ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.",
-  "ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค."];
-const MF=["มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน",
-  "กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม"];
-function stripNum(n){
-  return String(n||"").replace(/^\d+[\.\)\-\s]+/,'').trim();
-}
-
-function makeDefaultPlot(id, name){
-  return {
-    id: id || ('plot_' + Date.now()),
-    name: name || "แปลงที่ 1",
-    W: [{id: Date.now()+1, n: "คนงาน 1", s: 0}],
-    H: []
-  };
-}
-function loadPlotsFromLocal(){
-  let raw = localStorage.getItem('rbPlotsV1');
-  if(raw){
-    try{
-      let arr = JSON.parse(raw);
-      if(Array.isArray(arr) && arr.length){
-        return arr.map((p,idx)=>({
-          id: p.id || ('plot_'+(idx+1)),
-          name: p.name || ('แปลงที่ '+(idx+1)),
-          W: (p.W && p.W.length ? p.W :
-            [{id:Date.now()+idx,n:"คนงาน 1",s:0}])
-            .map((x,i)=>({
-              id:x.id||(i+1),
-              n:stripNum(x.n)||x.n,
-              s:+x.s||0
-            })),
-          H: (p.H || []).map(x=>({
-            ...x,
-            wn:stripNum(x.wn)||x.wn,
-            nt:x.nt||""
-          }))
-        }));
-      }
-    }catch(e){}
-  }
-  let oldW = JSON.parse(localStorage.getItem('rbW4') || 'null');
-  let oldH = JSON.parse(localStorage.getItem('rbH4') || 'null');
-  let initW = (oldW && oldW.length ? oldW : [
-    {id:1,n:"ตั้ม",s:6880},{id:2,n:"มาย",s:13760}
-  ]).map((x,i)=>({id:x.id||(i+1),n:stripNum(x.n)||x.n,s:+x.s||0}));
-  let initH = (oldH || []).map(x=>({
-    ...x,wn:stripNum(x.wn)||x.wn,nt:x.nt||""
+function normPlots(arr){
+  return arr.map((p,idx)=>({
+    id:p.id||('plot_'+(idx+1)),
+    name:p.name||('แปลงที่ '+(idx+1)),
+    W:(p.W&&p.W.length?p.W:[{id:Date.now()+idx,n:"คนงาน 1",s:0}])
+      .map((x,i)=>({
+        id:x.id||(i+1),n:stripNum(x.n)||x.n,s:+x.s||0
+      })),
+    H:(p.H||[]).map(x=>({
+      ...x,nt:x.nt||"",wn:stripNum(x.wn)||x.wn
+    }))
   }));
-  let initialPlots = [{id:'plot_1', name:'แปลงที่ 1', W:initW, H:initH}];
-  localStorage.setItem('rbPlotsV1', JSON.stringify(initialPlots));
-  return initialPlots;
 }
-
-let PLOTS = loadPlotsFromLocal();
-let curPlotId = localStorage.getItem('rbCurPlotId') || PLOTS.at(0).id;
-if(!PLOTS.some(p=>p.id===curPlotId)) curPlotId = PLOTS.at(0).id;
-
-function getCurPlot(){
-  let p = PLOTS.find(x=>x.id===curPlotId);
-  if(!p){ p = PLOTS.at(0); curPlotId = p.id; }
-  return p;
+function loadPlots(){
+  try{
+    let a=JSON.parse(ls.getItem('rbPlotsV1'));
+    if(Array.isArray(a)&&a.length)return normPlots(a);
+  }catch(e){}
+  let oW=JSON.parse(ls.getItem('rbW4')||'null');
+  let oH=JSON.parse(ls.getItem('rbH4')||'null');
+  let p=normPlots([{
+    id:'plot_1',name:'แปลงที่ 1',
+    W:oW&&oW.length?oW:[{id:1,n:"ตั้ม",s:6880},{id:2,n:"มาย",s:13760}],
+    H:oH||[]
+  }]);
+  ls.setItem('rbPlotsV1',JSON.stringify(p));return p;
 }
-function getW(){ return getCurPlot().W; }
-function setW(arr){ getCurPlot().W = arr; }
-function getH(){ return getCurPlot().H; }
-function setH(arr){ getCurPlot().H = arr; }
+let PLOTS=loadPlots();
+let curPlotId=ls.getItem('rbCurPlotId')||PLOTS[0].id;
+if(!PLOTS.some(p=>p.id===curPlotId))curPlotId=PLOTS[0].id;
+const getCurPlot=()=>PLOTS.find(x=>x.id===curPlotId)
+  ||(curPlotId=PLOTS[0].id,PLOTS[0]);
+const getW=()=>getCurPlot().W;
+const setW=a=>getCurPlot().W=a;
+const getH=()=>getCurPlot().H;
 
 let S={tot:0,inc:0,sav:0,net:0,newS:0};
 let editIdx=-1,editFromTab=4,curSlipItems=[],curTab=1;
 dt.valueAsDate=new Date();
+
 function renderPlotSelector(){
-  let bar = document.getElementById('plotBar');
-  if(bar) bar.classList.toggle('hide', PLOTS.length <= 1);
-  let sel = document.getElementById('plotSel');
-  if(!sel) return;
-  sel.innerHTML = PLOTS.map(p=>
-    `<option value="${p.id}">${p.name}</option>`
-  ).join('');
-  sel.value = curPlotId;
-  let rInp = document.getElementById('renamePlotInp');
-  if(rInp) rInp.value = getCurPlot().name;
-  let admLbl = document.getElementById('admPlotName');
-  if(admLbl) admLbl.innerText = getCurPlot().name;
+  plotBar.classList.toggle('hide',PLOTS.length<=1);
+  plotSel.innerHTML=PLOTS.map(p=>
+    `<option value="${p.id}">${p.name}</option>`).join('');
+  plotSel.value=curPlotId;
+  renamePlotInp.value=getCurPlot().name;
+  admPlotName.innerText=getCurPlot().name;
 }
 function switchPlot(pid){
-  if(editIdx>=0) cancelEdit();
-  curPlotId = pid;
-  localStorage.setItem('rbCurPlotId', curPlotId);
-  renderPlotSelector();
-  init();
+  if(editIdx>=0)cancelEdit();
+  ls.setItem('rbCurPlotId',curPlotId=pid);
+  renderPlotSelector();init();
   if(curTab==2){delWBox.innerHTML="";renderWList();}
   if(curTab==3){fillYears();renderYear();}
   if(curTab==4){fillPersonDropdown();fillYears();renderPerson();}
   if(curTab==5){fillYears();renderDaily();}
-  if(curTab==6){initSlipPage();}
+  if(curTab==6)initSlipPage();
 }
-
-function getDbUrl(){
-  let u=FB_URL.trim().replace(/\/+$/,'');
-  return (u && u.startsWith('http')) ? u+'/rubberData.json' : '';
-}
-
-let isSyncing = false;
 
 async function syncCloud(push){
-  let url=getDbUrl();
-  if(!url){
-    syncStatus.innerText="⚠️ โหมดออฟไลน์ (ยังไม่ได้ใส่ลิงก์ Firebase)";
-    syncStatus.style.background="#fff3e0";
-    syncStatus.style.color="#e65100";
-    return;
-  }
-  let hasDirty=localStorage.getItem('rbDirty')==='1';
+  let dirty=ls.getItem('rbDirty')==='1';
   try{
-    if(push || hasDirty){
+    if(push||dirty){
       syncStatus.innerText="🔄 กำลังซิงค์ข้อมูลขึ้นออนไลน์...";
-      let curP = getCurPlot();
-      let payload = JSON.parse(JSON.stringify({ plots: PLOTS, W: curP.W, H: curP.H }));
-      let res=await fetch(url,{
+      let curP=getCurPlot();
+      let res=await fetch(FB_URL,{
         method:'PUT',
         headers:{'Content-Type':'application/json'},
-        body:JSON.stringify(payload)
+        body:JSON.stringify({
+          appPin:APP_PIN,plots:PLOTS,W:curP.W,H:curP.H
+        })
       });
       if(!res.ok)throw 0;
-      localStorage.removeItem('rbDirty');
-      syncStatus.innerText="🟢 ซิงค์ข้อมูลออนไลน์แล้ว ("+new Date().toLocaleTimeString('th-TH')+")";
-      syncStatus.style.background="#e8f5e9";
-      syncStatus.style.color="#1b5e20";
+      ls.removeItem('rbDirty');
     }else{
-      let res=await fetch(url);
+      let res=await fetch(FB_URL);
       if(!res.ok)throw 0;
       let d=await res.json();
-      if(d && Array.isArray(d.plots) && d.plots.length){
-        PLOTS = d.plots.map((p,idx)=>({
-          id: p.id || ('plot_'+(idx+1)),
-          name: p.name || ('แปลงที่ '+(idx+1)),
-          W: (p.W && p.W.length ? p.W :
-            [{id:Date.now()+idx,n:"คนงาน 1",s:0}])
-            .map((x,i)=>({
-              id:x.id||(i+1),
-              n:stripNum(x.n)||x.n,
-              s:+x.s||0
-            })),
-          H: (p.H || []).map(x=>({
-            ...x,
-            nt:x.nt||"",
-            wn:stripNum(x.wn)||x.wn
-          }))
-        }));
-        if(!PLOTS.some(p=>p.id===curPlotId)) curPlotId = PLOTS.at(0).id;
-        localStorage.setItem('rbPlotsV1', JSON.stringify(PLOTS));
-        init();
+      if(d&&d.appPin){
+        let cp=normPin(d.appPin);
+        if(cp&&cp!==APP_PIN){
+          let auth=ls.getItem('rbAuth')===APP_PIN;
+          APP_PIN=cp;ls.setItem('rbCustomPin',APP_PIN);
+          if(auth)ls.setItem('rbAuth',APP_PIN);
+          curPinDisplay.innerText=APP_PIN;
+        }
+      }
+      if(d&&Array.isArray(d.plots)&&d.plots.length){
+        PLOTS=normPlots(d.plots);
+        if(!PLOTS.some(p=>p.id===curPlotId))curPlotId=PLOTS[0].id;
+        ls.setItem('rbPlotsV1',JSON.stringify(PLOTS));init();
         if(curTab==2)renderWList();
         if(curTab==3){fillYears();renderYear();}
         if(curTab==4){fillPersonDropdown();fillYears();renderPerson();}
         if(curTab==5){fillYears();renderDaily();}
         if(curTab==6)initSlipPage();
-      }else if(d && d.W){
-        let cloudW = d.W.map((x,i)=>({
-          id:x.id||(i+1),n:stripNum(x.n)||x.n,s:+x.s||0
-        }));
-        let cloudH = (d.H||[]).map(x=>({
-          ...x,nt:x.nt||"",wn:stripNum(x.wn)||x.wn
-        }));
-        PLOTS = [{id:'plot_1', name:'แปลงที่ 1', W:cloudW, H:cloudH}];
-        curPlotId = 'plot_1';
-        localStorage.setItem('rbPlotsV1', JSON.stringify(PLOTS));
-        init();
-        await syncCloud(true);
-      }else if(PLOTS.length){
-        await syncCloud(true);
-      }
-      syncStatus.innerText="🟢 ออนไลน์พร้อมใช้งาน ("+new Date().toLocaleTimeString('th-TH')+")";
-      syncStatus.style.background="#e8f5e9";
-      syncStatus.style.color="#1b5e20";
+      }else if(d&&d.W){
+        PLOTS=normPlots([{
+          id:'plot_1',name:'แปลงที่ 1',W:d.W,H:d.H||[]
+        }]);
+        curPlotId='plot_1';
+        ls.setItem('rbPlotsV1',JSON.stringify(PLOTS));
+        init();await syncCloud(1);
+      }else if(PLOTS.length)await syncCloud(1);
     }
+    let tm=new Date().toLocaleTimeString('th-TH');
+    syncStatus.innerText=`🟢 ${push?'ซิงค์ข้อมูลออนไลน์แล้ว':
+      'ออนไลน์พร้อมใช้งาน'} (${tm})`;
+    syncStatus.style.background="#e8f5e9";
+    syncStatus.style.color="#1b5e20";
   }catch(e){
-    if(push)localStorage.setItem('rbDirty','1');
-    syncStatus.innerText="🔴 ไม่มีเน็ต (บันทึกในเครื่องแล้ว รอซิงค์อัตโนมัติ)";
+    if(push)ls.setItem('rbDirty','1');
+    syncStatus.innerText=
+      "🔴 ไม่มีเน็ต (บันทึกในเครื่องแล้ว รอซิงค์อัตโนมัติ)";
     syncStatus.style.background="#ffebee";
     syncStatus.style.color="#c62828";
   }
 }
-window.addEventListener('online',()=>{if(localStorage.getItem('rbAuth')===APP_PIN)syncCloud(false);});
-document.addEventListener('visibilitychange',()=>{if(!document.hidden && localStorage.getItem('rbAuth')===APP_PIN)syncCloud(false);});
-setInterval(()=>{if(localStorage.getItem('rbAuth')===APP_PIN && localStorage.getItem('rbDirty')==='1')syncCloud(true);},15000);
-
-
+window.addEventListener('online',()=>{
+  if(ls.getItem('rbAuth')===APP_PIN)syncCloud(0);
+});
+document.addEventListener('visibilitychange',()=>{
+  if(!document.hidden&&ls.getItem('rbAuth')===APP_PIN)syncCloud(0);
+});
+setInterval(()=>{
+  if(ls.getItem('rbAuth')===APP_PIN&&
+    ls.getItem('rbDirty')==='1')syncCloud(1);
+},15000);
 
 function saveAllData(){
-  localStorage.setItem('rbPlotsV1', JSON.stringify(PLOTS));
-  localStorage.setItem('rbCurPlotId', curPlotId);
-  localStorage.setItem('rbDirty','1');
-  syncCloud(true);
+  ls.setItem('rbPlotsV1',JSON.stringify(PLOTS));
+  ls.setItem('rbCurPlotId',curPlotId);
+  ls.setItem('rbDirty','1');syncCloud(1);
 }
-function fmt2(n){
-  return Number(n||0).toLocaleString('th-TH',{
-    minimumFractionDigits:2,
-    maximumFractionDigits:2
-  });
-}
+const fmt2=n=>Number(n||0).toLocaleString('th-TH',{
+  minimumFractionDigits:2,maximumFractionDigits:2
+});
 function fmtThaiDate(str,short){
-  let [yStr,mStr,dStr]=str.split('-');
-  if(!dStr)return str;
-  let d=Number(dStr),m=Number(mStr)-1,y=Number(yStr)+543;
-  return `${d} ${short?M[m]:MF[m]} ${short?String(y).slice(-2):y}`;
+  let [y,m,d]=str.split('-');if(!d)return str;
+  let be=Number(y)+543;
+  return `${Number(d)} ${short?M[m-1]:MF[m-1]} `
+    +`${short?String(be).slice(-2):be}`;
 }
+
 function init(){
-  renderPlotSelector();
-  let W = getW();
-  if(!W.length){ setW([{id:Date.now(),n:"คนงาน 1",s:0}]); W = getW(); }
+  renderPlotSelector();let W=getW();
+  if(!W.length){setW([{id:Date.now(),n:"คนงาน 1",s:0}]);W=getW();}
   let v=wSel.value||0;
   wSel.innerHTML=W.map((x,i)=>
-    `<option value="${i}">${x.n}</option>`
-  ).join('');
+    `<option value="${i}">${x.n}</option>`).join('');
   wSel.value=W[v]?v:0;
   dMoSel.innerHTML=`<option value="all">ทุกเดือน</option>`+
     MF.map((m,i)=>`<option value="${i}">${m}</option>`).join('');
   calc(0);
 }
 function fillPersonDropdown(){
-  let W = getW(), H = getH();
-  let cur=wHistSel.value;
-  let opts=W.map(x=>
-    `<option value="${x.id}">${x.n}</option>`
-  ).join('');
-  if(chkShowDel&&chkShowDel.checked){
-    let activeIds=new Set(W.map(x=>x.id)),delMap=new Map();
-    H.forEach(x=>{
-      if(!activeIds.has(x.wid))
-        delMap.set(x.wid,x.wn||`คนงานเก่า`);
-    });
-    delMap.forEach((name,id)=>{
-      opts+=`<option value="${id}">${name} (ลบแล้ว)</option>`;
-    });
+  let W=getW(),H=getH(),cur=wHistSel.value;
+  let opts=W.map(x=>`<option value="${x.id}">${x.n}</option>`).join('');
+  if(chkShowDel?.checked){
+    let ids=new Set(W.map(x=>x.id)),dm=new Map();
+    H.forEach(x=>{if(!ids.has(x.wid))dm.set(x.wid,x.wn||"คนงานเก่า");});
+    dm.forEach((n,id)=>opts+=
+      `<option value="${id}">${n} (ลบแล้ว)</option>`);
   }
   wHistSel.innerHTML=opts;
   if(cur&&[...wHistSel.options].some(o=>o.value===cur))
     wHistSel.value=cur;
 }
 function fillYears(){
-  let H = getH();
-  let yrs=[...new Set(H.map(x=>new Date(x.d).getFullYear())
+  let yrs=[...new Set(getH().map(x=>new Date(x.d).getFullYear())
     .filter(y=>!isNaN(y)))].sort((a,b)=>b-a);
   if(!yrs.length)yrs=[new Date().getFullYear()];
-  let opts=yrs.map(y=>
-    `<option value="${y}">พ.ศ. ${y+543}</option>`
-  ).join('')+`<option value="all">รวมทุกปี</option>`;
+  let opts=yrs.map(y=>`<option value="${y}">พ.ศ. ${y+543}</option>`)
+    .join('')+`<option value="all">รวมทุกปี</option>`;
   [yrSel,pYrSel,dYrSel].forEach(el=>{
     let c=el.value;el.innerHTML=opts;if(c)el.value=c;
   });
 }
 function getBaseSav(i){
-  let W = getW(), H = getH();
-  let base=+W[i].s||0;
-  if(editIdx>=0&&H[editIdx]&&H[editIdx].wid===W[i].id)
-    base=Math.max(0,base-H[editIdx].s);
-  return base;
+  let W=getW(),H=getH(),b=+W[i].s||0;
+  return(editIdx>=0&&H[editIdx]?.wid===W[i].id)
+    ?Math.max(0,b-H[editIdx].s):b;
 }
 function calc(man){
-  let i=+wSel.value||0,p=+prc.value||0,w=+wt.value||0;
-  let r1=+wp.value||0,r2=+sp.value||0;
-  let tot=w*p,inc=tot*r1/100;
-  let sav=man?(+mSav.value||0):Math.round(inc*r2)/100;
+  let i=+wSel.value||0,tot=(+wt.value||0)*(+prc.value||0);
+  let inc=tot*(+wp.value||0)/100;
+  let sav=man?(+mSav.value||0):Math.round(inc*(+sp.value||0))/100;
   if(!man)mSav.value=sav;
   let base=getBaseSav(i),net=inc-sav,newS=base+sav;
   S={tot,inc,sav,net,newS};
@@ -730,41 +627,32 @@ function calc(man){
   vNew.innerText=newS.toLocaleString()+" บ.";
 }
 function save(){
-  if(!+wt.value||!+prc.value)
-    return alert("กรุณาใส่ราคาและน้ำหนัก");
-  let W = getW(), H = getH();
-  let i=+wSel.value;
+  if(!+wt.value||!+prc.value)return alert("กรุณาใส่ราคาและน้ำหนัก");
+  let W=getW(),H=getH(),i=+wSel.value;
+  let rec={
+    wid:W[i].id,wn:W[i].n,d:dt.value,pr:+prc.value,
+    w:+wt.value,t:S.tot,i:S.inc,s:S.sav,p:S.net,
+    nt:editIdx>=0?(H[editIdx].nt||""):""
+  };
   if(editIdx>=0){
     let old=H[editIdx],oldW=W.find(w=>w.id===old.wid);
-    let retTab=editFromTab||4,retDate=dt.value;
+    let rt=editFromTab||4,rd=dt.value;
     if(oldW&&oldW.id!==W[i].id)
       oldW.s=Math.max(0,(+oldW.s||0)-old.s);
-    W[i].s=S.newS;
-    H[editIdx]={
-      wid:W[i].id,wn:W[i].n,d:dt.value,pr:+prc.value,
-      w:+wt.value,t:S.tot,i:S.inc,s:S.sav,p:S.net,nt:old.nt||""
-    };
-    saveAllData();
-    alert("บันทึกการแก้ไขเรียบร้อย!");cancelEdit();tab(retTab);
-    if(retTab===5)showDayDetail(retDate);
-    return;
+    W[i].s=S.newS;H[editIdx]=rec;saveAllData();
+    alert("บันทึกการแก้ไขเรียบร้อย!");
+    cancelEdit();tab(rt);if(rt===5)showDayDetail(rd);return;
   }
-  W[i].s=S.newS;
-  H.push({
-    wid:W[i].id,wn:W[i].n,d:dt.value,pr:+prc.value,
-    w:+wt.value,t:S.tot,i:S.inc,s:S.sav,p:S.net,nt:""
-  });
-  saveAllData();
-  alert("บันทึกเรียบร้อย! ยอดสะสมใหม่: "+S.newS.toLocaleString()+" บ.");
+  W[i].s=S.newS;H.push(rec);saveAllData();
+  alert("บันทึกเรียบร้อย! ยอดสะสมใหม่: "
+    +S.newS.toLocaleString()+" บ.");
   wt.value="";calc(0);
 }
 function editLog(idx,fromTab){
-  let W = getW(), H = getH();
-  let item=H[idx];if(!item)return;
+  let W=getW(),item=getH()[idx];if(!item)return;
   let wIdx=W.findIndex(w=>w.id===item.wid);
   if(wIdx<0)return alert(
-    "คนงานนี้ถูกลบรายชื่อไปแล้ว กรุณากด 'ดึงคนงานเก่ากลับมา' ก่อนครับ"
-  );
+    "คนงานนี้ถูกลบรายชื่อไปแล้ว กรุณากด 'ดึงคนงานเก่ากลับมา' ก่อนครับ");
   editIdx=idx;editFromTab=fromTab||4;wSel.value=wIdx;
   dt.value=item.d;prc.value=item.pr;wt.value=item.w;
   wp.value=item.t?Math.round((item.i/item.t)*1000)/10:40;
@@ -774,8 +662,7 @@ function editLog(idx,fromTab){
   editBanner.classList.remove('hide');
   btnCancelEdit.classList.remove('hide');
   btnSave.innerText="💾 บันทึกการแก้ไขรายการนี้";
-  btnSave.className="bo";
-  calc(1);tab(1);
+  btnSave.className="bo";calc(1);tab(1);
 }
 function cancelEdit(){
   editIdx=-1;wt.value="";dt.valueAsDate=new Date();
@@ -783,124 +670,126 @@ function cancelEdit(){
   editBanner.classList.add('hide');
   btnCancelEdit.classList.add('hide');
   btnSave.innerText="💾 บันทึกยอดเงินนี้";
-  btnSave.className="bg";
-  calc(0);
+  btnSave.className="bg";calc(0);
 }
 function tab(n){
   curTab=n;
-  [p1,p2,p3,p4,p5,p6].forEach((el,idx)=>
-    el.classList.toggle('hide',idx+1!=n)
-  );
-  [m1,m2,m3,m4,m5,m6].forEach((el,idx)=>
-    el.classList.toggle('act',idx+1==n)
-  );
+  [p1,p2,p3,p4,p5,p6].forEach((e,i)=>e.classList.toggle('hide',i+1!=n));
+  [m1,m2,m3,m4,m5,m6].forEach((e,i)=>e.classList.toggle('act',i+1==n));
   if(n==2){delWBox.innerHTML="";renderWList();renderPlotSelector();}
   if(n==3){fillYears();renderYear();}
   if(n==4){fillPersonDropdown();fillYears();renderPerson();}
   if(n==5){fillYears();renderDaily();}
-  if(n==6){initSlipPage();}
+  if(n==6)initSlipPage();
 }
 function renderWList(){
-  let W = getW();
-  wList.innerHTML=W.map((x,i)=>`<div class="w-card">
+  wList.innerHTML=getW().map((x,i)=>`
+  <div class="w-card">
     <div class="w-top">
-      <input id="en${i}" value="${x.n}" placeholder="ชื่อคนงาน">
+      <input id="en${i}" value="${x.n}"
+        placeholder="ชื่อคนงาน">
       <button type="button" class="br"
-        style="margin:0;padding:8px" onclick="delW(${i})">🗑️ ลบ</button>
+        style="margin:0;padding:8px"
+        onclick="delW(${i})">🗑️ ลบ</button>
     </div>
-    <label style="font-size:15px;margin:2px 0">ยอดสะสมคงเหลือ (บาท)</label>
-    <input type="number" id="es${i}" class="yel" value="${x.s}">
+    <label style="font-size:15px;margin:2px 0">
+      ยอดสะสมคงเหลือ (บาท)</label>
+    <input type="number" id="es${i}"
+      class="yel" value="${x.s}">
   </div>`).join('');
 }
 function syncWInputs(){
-  let W = getW();
-  W.forEach((x,i)=>{
-    let a=document.getElementById('en'+i);
-    let b=document.getElementById('es'+i);
+  getW().forEach((x,i)=>{
+    let a=$('en'+i),b=$('es'+i);
     if(a)x.n=stripNum(a.value)||a.value;
     if(b)x.s=+b.value||0;
   });
 }
 function addW(){
   syncWInputs();
-  let W = getW();
-  let c=W.length+1,nm=`คนงานใหม่ ${c}`;
-  while(W.some(x=>x.n.toLowerCase()===nm.toLowerCase())){
-    c++;nm=`คนงานใหม่ ${c}`;
-  }
+  let W=getW(),c=W.length+1,nm=`คนงานใหม่ ${c}`;
+  while(W.some(x=>
+    x.n.toLowerCase()===nm.toLowerCase()))
+    nm=`คนงานใหม่ ${++c}`;
   W.push({id:Date.now(),n:nm,s:0});
   renderWList();
 }
 function delW(i){
-  let W = getW();
-  if(W.length<=1)return alert("ต้องมีคนงานอย่างน้อย 1 คนครับ");
-  if(!confirm(`ยืนยันการลบ "${W[i].n}" ใช่หรือไม่?`))return;
-  syncWInputs();W.splice(i,1);renderWList();
+  let W=getW();
+  if(W.length<=1)
+    return alert("ต้องมีคนงานอย่างน้อย 1 คนครับ");
+  if(confirm(`ยืนยันการลบ "${W[i].n}" ใช่หรือไม่?`)){
+    syncWInputs();W.splice(i,1);renderWList();
+  }
 }
 function showDeletedW(){
-  let W = getW(), H = getH();
-  let activeIds=new Set(W.map(x=>x.id)),delMap=new Map();
-  H.forEach(x=>{
-    if(!activeIds.has(x.wid)){
-      if(!delMap.has(x.wid))
-        delMap.set(x.wid,{id:x.wid,n:x.wn||"คนงานเก่า",s:0});
-      delMap.get(x.wid).s+=x.s;
+  let W=getW(),ids=new Set(W.map(x=>x.id));
+  let dm=new Map();
+  getH().forEach(x=>{
+    if(!ids.has(x.wid)){
+      if(!dm.has(x.wid))
+        dm.set(x.wid,{
+          id:x.wid,n:x.wn||"คนงานเก่า",s:0
+        });
+      dm.get(x.wid).s+=x.s;
     }
   });
-  let list=[...delMap.values()];
-  if(!list.length){
-    delWBox.innerHTML=`<p style="color:#666;text-align:center;margin:8px 0">
-      ไม่มีรายชื่อคนงานที่ลบไปแล้วครับ</p>`;
-    return;
-  }
-  delWBox.innerHTML=`<div class="detail-box">`+list.map(d=>`
-    <div class="row" style="border:0">
-      <span><b>${d.n}</b> (สะสม ${d.s.toLocaleString()} บ.)</span>
+  let list=[...dm.values()];
+  delWBox.innerHTML=list.length?
+    `<div class="detail-box">`+
+    list.map(d=>`<div class="row" style="border:0">
+      <span><b>${d.n}</b>
+      (สะสม ${d.s.toLocaleString()} บ.)</span>
       <button type="button" class="bg"
         style="width:auto;margin:0;padding:6px 12px"
-        onclick="restoreOldW(${d.id})">ดึงกลับ</button>
-    </div>`).join('')+`</div>`;
+        onclick="restoreOldW(${d.id})">
+        ดึงกลับ</button>
+    </div>`).join('')+`</div>`:
+    `<p style="color:#666;text-align:center;
+      margin:8px 0">
+      ไม่มีรายชื่อคนงานที่ลบไปแล้วครับ</p>`;
 }
 function restoreOldW(wid){
   syncWInputs();
-  let W = getW(), H = getH();
-  let name="คนงานเก่า",sav=0;
-  H.forEach(x=>{if(x.wid===wid){name=x.wn||name;sav+=x.s;}});
-  let clean=stripNum(name)||name;
-  if(W.some(x=>x.n.toLowerCase()===clean.toLowerCase()))
-    return alert(`มีชื่อ "${clean}" อยู่ในรายการปัจจุบันแล้วครับ`);
-  W.push({id:wid,n:clean,s:sav});
+  let W=getW(),nm="คนงานเก่า",sav=0;
+  getH().forEach(x=>{
+    if(x.wid===wid){nm=x.wn||nm;sav+=x.s;}
+  });
+  let cl=stripNum(nm)||nm;
+  if(W.some(x=>
+    x.n.toLowerCase()===cl.toLowerCase()))
+    return alert(
+      `มีชื่อ "${cl}" อยู่ในรายการปัจจุบันแล้วครับ`);
+  W.push({id:wid,n:cl,s:sav});
   renderWList();showDeletedW();
-  alert(`ดึง "${clean}" กลับมาเรียบร้อย! กด "บันทึกการแก้ไขทั้งหมด" เพื่อยืนยัน`);
+  alert(`ดึง "${cl}" กลับมาเรียบร้อย! `
+    +`กด "บันทึกการแก้ไขทั้งหมด" เพื่อยืนยัน`);
 }
-
 function saveW(){
-  let W = getW(), H = getH();
-  let seen=new Set(),activeIds=new Set(W.map(x=>x.id));
+  let W=getW(),H=getH(),seen=new Set();
+  let ids=new Set(W.map(x=>x.id));
   for(let i=0;i<W.length;i++){
-    let a=document.getElementById('en'+i);
-    let nm=stripNum(a?a.value:W[i].n);
-    if(!nm)return alert("กรุณากรอกชื่อคนงานให้ครบทุกช่องครับ");
+    let nm=stripNum($('en'+i)?.value||W[i].n);
+    if(!nm)return alert(
+      "กรุณากรอกชื่อคนงานให้ครบทุกช่องครับ");
     let low=nm.toLowerCase();
-    if(seen.has(low))
-      return alert(`ชื่อ "${nm}" ซ้ำกัน! กรุณาตั้งชื่อให้ต่างกันครับ`);
-    if(H.some(h=>!activeIds.has(h.wid)&&stripNum(h.wn).toLowerCase()===low))
-      return alert(`ชื่อ "${nm}" ซ้ำกับประวัติคนงานเก่าที่ลบไปแล้วในแปลงนี้!`);
+    if(seen.has(low))return alert(
+      `ชื่อ "${nm}" ซ้ำกัน! กรุณาตั้งชื่อให้ต่างกันครับ`);
+    if(H.some(h=>!ids.has(h.wid)&&
+      stripNum(h.wn).toLowerCase()===low))
+      return alert(`ชื่อ "${nm}" `
+        +`ซ้ำกับประวัติคนงานเก่าที่ลบไปแล้วในแปลงนี้!`);
     seen.add(low);
   }
-  syncWInputs();
-  saveAllData();
-  init();
-  renderWList();
-  alert("บันทึกการแก้ไขเรียบร้อย!");
+  syncWInputs();saveAllData();init();
+  renderWList();alert("บันทึกการแก้ไขเรียบร้อย!");
 }
-
 function renderYear(){
-  let H = getH();
-  let y=yrSel.value;
-  let md=Array.from({length:12},()=>({dates:new Set(),w:0,t:0,s:0,p:0}));
-  let tc=0,tw=0,tt=0,ts=0,tp=0;
-  H.forEach(x=>{
+  let y=yrSel.value,tc=0,tw=0,tt=0,ts=0,tp=0;
+  let md=Array.from({length:12},()=>({
+    dates:new Set(),w:0,t:0,s:0,p:0
+  }));
+  getH().forEach(x=>{
     let d=new Date(x.d);
     if(y==='all'||d.getFullYear()==y){
       let m=d.getMonth();
@@ -911,187 +800,163 @@ function renderYear(){
       }
     }
   });
-  yrSum.innerHTML=`<table><tr><th>เดือน</th><th>ครั้ง</th><th>นน.(กก.)</th>
-    <th>ยอดขาย</th><th>หักสะสม</th><th>จ่ายคนงาน</th><th>คงเหลือ</th></tr>`+
+  yrSum.innerHTML=`<table><tr><th>เดือน</th>
+    <th>ครั้ง</th><th>นน.(กก.)</th><th>ยอดขาย</th>
+    <th>หักสะสม</th><th>จ่ายคนงาน</th><th>คงเหลือ</th>
+    </tr>`+
   M.map((m,i)=>{
-    let cnt=md[i].dates.size;tc+=cnt;
-    let rem=md[i].t-md[i].s-md[i].p;
-    return `<tr><td style="text-align:center"><b>${m}</b></td>
-      <td style="text-align:center">${cnt||'-'}</td>
+    let c=md[i].dates.size;
+    let r=md[i].t-md[i].s-md[i].p;tc+=c;
+    return`<tr>
+      <td style="text-align:center"><b>${m}</b></td>
+      <td style="text-align:center">${c||'-'}</td>
       <td>${md[i].w?md[i].w.toLocaleString():'-'}</td>
       <td>${md[i].t?md[i].t.toLocaleString():'-'}</td>
       <td>${md[i].s?md[i].s.toLocaleString():'-'}</td>
       <td>${md[i].p?md[i].p.toLocaleString():'-'}</td>
-      <td><b>${md[i].t?rem.toLocaleString():'-'}</b></td></tr>`;
+      <td><b>${md[i].t?r.toLocaleString():'-'}</b></td>
+    </tr>`;
   }).join('')+
-  `<tr style="background:#fffde7;font-weight:bold"><td>รวม</td>
-    <td style="text-align:center">${tc}</td><td>${tw.toLocaleString()}</td>
-    <td>${tt.toLocaleString()}</td><td>${ts.toLocaleString()}</td>
+  `<tr style="background:#fffde7;font-weight:bold">
+    <td>รวม</td>
+    <td style="text-align:center">${tc}</td>
+    <td>${tw.toLocaleString()}</td>
+    <td>${tt.toLocaleString()}</td>
+    <td>${ts.toLocaleString()}</td>
     <td>${tp.toLocaleString()}</td>
-    <td>${(tt-ts-tp).toLocaleString()}</td></tr></table>`;
+    <td>${(tt-ts-tp).toLocaleString()}</td>
+  </tr></table>`;
 }
-
-let showPersonLogs = false;
+let showPersonLogs=false;
 function togglePersonLogs(){
-  showPersonLogs = !showPersonLogs;
-  let box = document.getElementById('pLogBox');
-  let btn = document.getElementById('btnToggleLogs');
-  if(box) box.classList.toggle('hide', !showPersonLogs);
-  if(btn){
-    let cnt = btn.getAttribute('data-cnt') || '0';
-    btn.innerText = showPersonLogs
-      ? `🙈 ซ่อนประวัติรายครั้ง (${cnt} ครั้ง)`
-      : `👁️ แสดงประวัติรายครั้ง (${cnt} ครั้ง)`;
+  showPersonLogs=!showPersonLogs;
+  pLogBox?.classList.toggle('hide',!showPersonLogs);
+  if(btnToggleLogs){
+    let c=btnToggleLogs.dataset.cnt||0;
+    btnToggleLogs.innerText=
+      `${showPersonLogs?'🙈 ซ่อน':'👁️ แสดง'}ประวัติ `
+      +`(${c} ครั้ง)`;
   }
 }
-
 function renderPerson(){
-  let W = getW(), H = getH();
-  let wid=+wHistSel.value,wObj=W.find(x=>x.id===wid),y=pYrSel.value;
-  let md=Array.from({length:12},()=>({cnt:0,w:0,i:0,s:0,p:0}));
-  let tc=0,tw=0,ti=0,ts=0,tp=0,logs=[];
-  H.forEach((x,idx)=>{
+  let W=getW(),wid=+wHistSel.value,y=pYrSel.value;
+  let wObj=W.find(x=>x.id===wid),logs=[];
+  let md=Array.from({length:12},()=>({
+    cnt:0,w:0,i:0,s:0,p:0
+  }));
+  let tc=0,tw=0,ti=0,ts=0,tp=0;
+  getH().forEach((x,idx)=>{
     let d=new Date(x.d);
     if(x.wid===wid&&(y==='all'||d.getFullYear()==y)){
       let m=d.getMonth();
       if(!isNaN(m)){
-        md[m].cnt++;md[m].w+=x.w;md[m].i+=x.i;md[m].s+=x.s;md[m].p+=x.p;
+        md[m].cnt++;md[m].w+=x.w;md[m].i+=x.i;
+        md[m].s+=x.s;md[m].p+=x.p;
         tc++;tw+=x.w;ti+=x.i;ts+=x.s;tp+=x.p;
       }
       logs.push({...x,idx});
     }
   });
   let savText=wObj?`${(+wObj.s).toLocaleString()} บ.`:
-    `<span style="color:#c62828">ลบรายชื่อแล้ว (สะสมรวม ${ts.toLocaleString()} บ.)</span>`;
-  let btnTxt = showPersonLogs
-    ? `🙈 ซ่อนประวัติรายครั้ง (${logs.length} ครั้ง)`
-    : `👁️ แสดงประวัติรายครั้ง (${logs.length} ครั้ง)`;
+    `<span style="color:#c62828">ลบรายชื่อแล้ว `
+    +`(สะสมรวม ${ts.toLocaleString()} บ.)</span>`;
   personSum.innerHTML=`<div class="row" style="margin-top:8px">
-    <span>สะสมคงเหลือ:</span><b style="color:#0d47a1">${savText}</b></div>
+    <span>สะสมคงเหลือ:</span>
+    <b style="color:#0d47a1">${savText}</b></div>
   <table><tr><th>เดือน</th><th>ครั้ง</th><th>นน.(กก.)</th>
     <th>รายได้</th><th>หักสะสม</th><th>รับสุทธิ</th></tr>`+
-  M.map((m,i)=>`<tr><td style="text-align:center"><b>${m}</b></td>
+  M.map((m,i)=>`<tr>
+    <td style="text-align:center"><b>${m}</b></td>
     <td style="text-align:center">${md[i].cnt||'-'}</td>
     <td>${md[i].w?md[i].w.toLocaleString():'-'}</td>
     <td>${md[i].i?md[i].i.toLocaleString():'-'}</td>
     <td>${md[i].s?md[i].s.toLocaleString():'-'}</td>
     <td>${md[i].p?md[i].p.toLocaleString():'-'}</td></tr>`).join('')+
-  `<tr style="background:#fffde7;font-weight:bold"><td>รวม</td>
-    <td style="text-align:center">${tc}</td><td>${tw.toLocaleString()}</td>
-    <td>${ti.toLocaleString()}</td><td>${ts.toLocaleString()}</td>
+  `<tr style="background:#fffde7;font-weight:bold">
+    <td>รวม</td><td style="text-align:center">${tc}</td>
+    <td>${tw.toLocaleString()}</td>
+    <td>${ti.toLocaleString()}</td>
+    <td>${ts.toLocaleString()}</td>
     <td>${tp.toLocaleString()}</td></tr></table>
-  <button type="button" id="btnToggleLogs" data-cnt="${logs.length}"
-    class="bb" style="margin-top:14px" onclick="togglePersonLogs()">
-    ${btnTxt}</button>
-  <div id="pLogBox" class="${showPersonLogs?'':'hide'}" style="margin-top:8px">`+
-  (logs.length?`<table><tr><th>วันที่</th><th>นน.</th><th>ราคา</th>
-    <th>สะสม</th><th>รับสุทธิ</th><th>จัดการ</th></tr>`+
+  <button type="button" id="btnToggleLogs"
+    data-cnt="${logs.length}" class="bb"
+    style="margin-top:14px" onclick="togglePersonLogs()">
+    ${showPersonLogs?'🙈 ซ่อน':'👁️ แสดง'}ประวัติ (${logs.length} ครั้ง)
+  </button>
+  <div id="pLogBox" class="${showPersonLogs?'':'hide'}"
+    style="margin-top:8px">`+
+  (logs.length?`<table><tr><th>วันที่</th><th>นน.</th>
+    <th>ราคา</th><th>สะสม</th><th>รับสุทธิ</th><th>จัดการ</th></tr>`+
   logs.slice().reverse().map(l=>`<tr>
     <td style="text-align:center">${fmtThaiDate(l.d,true)}</td>
     <td>${l.w.toLocaleString()}</td><td>${l.pr}</td>
-    <td>${l.s.toLocaleString()}</td><td><b>${l.p.toLocaleString()}</b></td>
+    <td>${l.s.toLocaleString()}</td>
+    <td><b>${l.p.toLocaleString()}</b></td>
     <td style="text-align:center;white-space:nowrap">
-      <button type="button" class="act-sm bo" onclick="editLog(${l.idx},4)">แก้</button>
-      <button type="button" class="act-sm br" onclick="delLog(${l.idx},4)">ลบ</button>
+      <button type="button" class="act-sm bo"
+        onclick="editLog(${l.idx},4)">แก้</button>
+      <button type="button" class="act-sm br"
+        onclick="delLog(${l.idx},4)">ลบ</button>
     </td></tr>`).join('')+`</table>`:
-  `<p style="color:#666;text-align:center">ไม่มีประวัติในปีที่เลือก</p>`)+`</div>`;
+  `<p style="color:#666;text-align:center">
+    ไม่มีประวัติในปีที่เลือก</p>`)+`</div>`;
 }
 function delLog(idx,fromTab,dateStr){
-  let W = getW(), H = getH();
-  let item=H[idx];if(!item)return;
-  if(!confirm(`ยืนยันการลบรายการวันที่ ${fmtThaiDate(item.d,true)}?\n`+
-    `ระบบจะหักเงินสะสมคืนให้อัตโนมัติ`))return;
-  let wObj=W.find(w=>w.id===item.wid);
+  let H=getH(),item=H[idx];
+  if(!item||!confirm(
+    `ยืนยันการลบรายการวันที่ ${fmtThaiDate(item.d,true)}?\n`
+    +`ระบบจะหักเงินสะสมคืนให้อัตโนมัติ`))return;
+  let wObj=getW().find(w=>w.id===item.wid);
   if(wObj)wObj.s=Math.max(0,(+wObj.s||0)-item.s);
-  H.splice(idx,1);
-  saveAllData();calc(0);
+  H.splice(idx,1);saveAllData();calc(0);
   if(fromTab===5){
     renderDaily();
-    if(dateStr&&H.some(x=>x.d===dateStr))showDayDetail(dateStr);
-  }else{renderPerson();}
+    if(dateStr&&H.some(x=>x.d===dateStr))
+      showDayDetail(dateStr);
+  }else renderPerson();
   alert("ลบรายการและปรับยอดสะสมเรียบร้อยแล้วครับ");
 }
 function saveSlipPdf(){
-  if(!slipPreview.querySelector('.slip-page')){
+  if(!slipPreview.querySelector('.slip-page'))
     return alert("กรุณาติ๊กเลือกอย่างน้อย 1 รายการครับ");
-  }
-
-  let oldFrame = document.getElementById('printFrame');
-  if(oldFrame) oldFrame.remove();
-
-  let iframe = document.createElement('iframe');
-  iframe.id = 'printFrame';
-  iframe.style.cssText = 'position:fixed;right:0;bottom:0;width:0;height:0;border:0;';
-  document.body.appendChild(iframe);
-
-  let styles = document.querySelector('style').innerHTML;
-  let content = slipPreview.innerHTML;
-
-  let doc = iframe.contentWindow.document;
-  doc.open();
-  doc.write(`<!DOCTYPE html>
-<html lang="th">
-<head>
-<meta charset="UTF-8">
-<title></title>
-<style>
-${styles}
-@page { size: A4 portrait; margin: 0; }
-@media print {
-  html, body {
-    width: 210mm;
-    margin: 0 !important;
-    padding: 0 !important;
-    background: #fff !important;
-  }
-  .slip-page {
-    width: 210mm;
-    height: 274mm;
-    padding: 6mm;
-    display: flex !important;
-    align-items: center;
-    justify-content: center;
-    page-break-after: always;
-    break-after: page;
-    overflow: hidden;
-    box-sizing: border-box;
-  }
-  .slip-page:last-child {
-    page-break-after: auto;
-    break-after: auto;
-  }
-}
-</style>
-</head>
-<body>${content}</body>
-</html>`);
+  $('printFrame')?.remove();
+  let f=document.createElement('iframe');
+  f.id='printFrame';
+  f.style.cssText='position:fixed;right:0;bottom:0;width:0;height:0;border:0;';
+  document.body.appendChild(f);
+  let doc=f.contentWindow.document;doc.open();
+  let st=document.querySelector('style').innerHTML;
+  doc.write(`<!DOCTYPE html><html lang="th"><head>
+    <meta charset="UTF-8"><style>${st}
+    @page{size:A4 portrait;margin:0}
+    @media print{html,body{width:210mm;margin:0!important;
+      padding:0!important;background:#fff!important}
+    .slip-page{width:210mm;height:274mm;padding:6mm;
+      display:flex!important;align-items:center;justify-content:center;
+      page-break-after:always;break-after:page;
+      overflow:hidden;box-sizing:border-box}
+    .slip-page:last-child{page-break-after:auto;
+      break-after:auto}}</style></head>
+    <body>${slipPreview.innerHTML}</body></html>`);
   doc.close();
-
   setTimeout(()=>{
-    iframe.contentWindow.focus();
-    iframe.contentWindow.print();
-  }, 200);
+    f.contentWindow.focus();f.contentWindow.print();
+  },200);
 }
-
 function renderDaily(){
-  let H = getH();
   let y=dYrSel.value,m=dMoSel.value;
-  let dayMap=new Map(),tw=0,tt=0;
-  dailyDetail.innerHTML="";
-  H.forEach(x=>{
-    let dObj=new Date(x.d);if(isNaN(dObj))return;
-    let okY = (y==='all'||dObj.getFullYear()==y);
-    let okM = (m==='all'||dObj.getMonth()==m);
-    if(okY && okM){
-      if(!dayMap.has(x.d))
-        dayMap.set(x.d,{d:x.d,wids:new Set(),w:0,t:0});
-      let rec=dayMap.get(x.d);
-      rec.wids.add(x.wid);rec.w+=x.w;rec.t+=x.t;
-      tw+=x.w;tt+=x.t;
+  let dm=new Map(),tw=0,tt=0;dailyDetail.innerHTML="";
+  getH().forEach(x=>{
+    let d=new Date(x.d);
+    if(!isNaN(d)&&(y==='all'||d.getFullYear()==y)&&
+      (m==='all'||d.getMonth()==m)){
+      if(!dm.has(x.d))
+        dm.set(x.d,{d:x.d,wids:new Set(),w:0,t:0});
+      let r=dm.get(x.d);
+      r.wids.add(x.wid);r.w+=x.w;r.t+=x.t;tw+=x.w;tt+=x.t;
     }
   });
-  let days=[...dayMap.values()]
-    .sort((a,b)=>b.d.localeCompare(a.d));
+  let days=[...dm.values()].sort((a,b)=>b.d.localeCompare(a.d));
   dailySum.innerHTML=days.length?
     `<p style="font-size:14px;color:#555;margin:6px 0">
       * แตะที่วันที่เพื่อดูรายชื่อคนงานที่มาขาย</p>
@@ -1109,20 +974,17 @@ function renderDaily(){
       <td colspan="2" style="text-align:center">
         รวม (${days.length} วัน)</td>
       <td>${tw.toLocaleString()}</td>
-      <td>${tt.toLocaleString()}</td></tr></table>`
-    :`<p style="color:#666;text-align:center;margin-top:15px">
+      <td>${tt.toLocaleString()}</td></tr></table>`:
+    `<p style="color:#666;text-align:center;margin-top:15px">
       ไม่มีประวัติการขายในเดือน/ปีที่เลือก</p>`;
 }
-
 function showDayDetail(dateStr){
-  let W = getW(), H = getH();
-  let list=[];
-  H.forEach((x,idx)=>{
+  let W=getW(),list=[];
+  getH().forEach((x,idx)=>{
     if(x.d===dateStr){
-      let wObj=W.find(w=>w.id===x.wid);
-      let name=wObj?wObj.n:
-        (stripNum(x.wn)||`คนงาน ${x.wid}`);
-      list.push({...x,idx,name});
+      let w=W.find(w=>w.id===x.wid);
+      list.push({...x,idx,
+        name:w?w.n:(stripNum(x.wn)||`คนงาน ${x.wid}`)});
     }
   });
   dailyDetail.innerHTML=`<div class="detail-box">
@@ -1132,12 +994,11 @@ function showDayDetail(dateStr){
         รายละเอียดวันที่ ${fmtThaiDate(dateStr,false)}</b>
       <button type="button" onclick="dailyDetail.innerHTML=''"
         style="width:auto;margin:0;padding:4px 10px;
-        background:#757575;font-size:14px">ปิด</button>
-    </div>
-    <table><tr><th>ชื่อคนงาน</th><th>นน.(กก.)</th><th>ยอดขาย</th>
-      <th>หักสะสม</th><th>รับสุทธิ</th><th>จัดการ</th></tr>`+
-    list.map(c=>`<tr>
-      <td style="text-align:left"><b>${c.name}</b></td>
+        background:#757575;font-size:14px">ปิด</button></div>
+    <table><tr><th>ชื่อคนงาน</th><th>นน.(กก.)</th>
+      <th>ยอดขาย</th><th>หักสะสม</th><th>รับสุทธิ</th><th>จัดการ</th></tr>`+
+    list.map(c=>`<tr><td style="text-align:left">
+      <b>${c.name}</b></td>
       <td>${c.w.toLocaleString()}</td>
       <td>${c.t.toLocaleString()}</td>
       <td>${c.s.toLocaleString()}</td>
@@ -1150,85 +1011,70 @@ function showDayDetail(dateStr){
       </td></tr>`).join('')+`</table></div>`;
 }
 function initSlipPage(){
-  let H = getH();
-  let dates=[...new Set(H.map(x=>x.d))]
+  let dates=[...new Set(getH().map(x=>x.d))]
     .sort((a,b)=>b.localeCompare(a));
   prDateSel.innerHTML=dates.length?
-    dates.map(d=>
-      `<option value="${d}">${fmtThaiDate(d,false)}</option>`
-    ).join(''):
+    dates.map(d=>`<option value="${d}">
+      ${fmtThaiDate(d,false)}</option>`).join(''):
     `<option value="">ยังไม่มีข้อมูลการขาย</option>`;
   renderSlipList();
 }
-
 function renderSlipList(){
-  let W = getW(), H = getH();
-  let d=prDateSel.value;curSlipItems=[];
+  let W=getW(),H=getH(),d=prDateSel.value;
+  curSlipItems=[];
   if(!d){
     slipChkList.innerHTML="";
-    slipPreview.innerHTML="";
-    return;
+    slipPreview.innerHTML="";return;
   }
   H.forEach((x,idx)=>{
     if(x.d===d){
-      let wObj=W.find(w=>w.id===x.wid);
-      let name=wObj?wObj.n:
-        (stripNum(x.wn)||`คนงาน ${x.wid}`);
-      let yr=d.slice(0,4);
-      let cumSav=H.filter((h,hi)=>
-        h.wid===x.wid && h.d.startsWith(yr) &&
-        (h.d<d || (h.d===d && hi<=idx))
-      ).reduce((a,b)=>a+b.s,0);
-      curSlipItems.push({...x,idx,name,cumSav});
+      let w=W.find(w=>w.id===x.wid),yr=d.slice(0,4);
+      let cumSav=H.filter((h,hi)=>h.wid===x.wid&&
+        h.d.startsWith(yr)&&(h.d<d||(h.d===d&&hi<=idx)))
+        .reduce((a,b)=>a+b.s,0);
+      curSlipItems.push({...x,idx,
+        name:w?w.n:(stripNum(x.wn)||`คนงาน ${x.wid}`),
+        cumSav});
     }
   });
-  let sumChk=`<label class="chk-row"
+  slipChkList.innerHTML=`<label class="chk-row"
     style="background:#e8f5e9;border-color:#2e7d32">
     <input type="checkbox" id="schkSum" checked
       onchange="renderSlipPreview()">
-    <span><b>📊 สรุปยอดขาย</b></span>
-  </label>`;
-  slipChkList.innerHTML=sumChk+curSlipItems.map((it,i)=>
-    `<label class="chk-row">
+    <span><b>📊 สรุปยอดขาย</b></span></label>`+
+    curSlipItems.map((it,i)=>`<label class="chk-row">
       <input type="checkbox" id="schk${i}" checked
         onchange="renderSlipPreview()">
       <span><b>${it.name}</b> — นน. ${it.w.toLocaleString()} กก.
-        (รับสุทธิ ${fmt2(it.p)} บ.)</span>
-    </label>`
-  ).join('');
+        (รับสุทธิ ${fmt2(it.p)} บ.)</span></label>`).join('');
   renderSlipPreview();
 }
-
-function toggleAllSlips(flag){
-  let sEl=document.getElementById('schkSum');
-  if(sEl)sEl.checked=flag;
+function toggleAllSlips(f){
+  if($('schkSum'))$('schkSum').checked=f;
   curSlipItems.forEach((_,i)=>{
-    let el=document.getElementById('schk'+i);
-    if(el)el.checked=flag;
+    if($('schk'+i))$('schk'+i).checked=f;
   });
   renderSlipPreview();
 }
 function renderSlipPreview(){
-  let html="", plotName = getCurPlot().name;
-  let plotHtml = (PLOTS.length > 1) ? `<div class="slip-plot">🌳 ${plotName}</div>` : '';
-  let sumChecked = document.getElementById('schkSum')?.checked;
-  if(sumChecked && curSlipItems.length){
+  let html="",plotHtml=PLOTS.length>1?
+    `<div class="slip-plot">🌳 ${getCurPlot().name}</div>`:'';
+  if($('schkSum')?.checked&&curSlipItems.length){
     let d=prDateSel.value;
-    let wCount=new Set(curSlipItems.map(x=>x.wid)).size;
+    let wCnt=new Set(curSlipItems.map(x=>x.wid)).size;
     let totW=curSlipItems.reduce((a,b)=>a+b.w,0);
     let totT=curSlipItems.reduce((a,b)=>a+b.t,0);
     let totS=curSlipItems.reduce((a,b)=>a+b.s,0);
     let totP=curSlipItems.reduce((a,b)=>a+b.p,0);
     let totRem=totT-totS-totP;
     html+=`<div class="slip-page"><div class="slip-portrait">
-      <div class="slip-card">
-      <div class="slip-hdr">สรุปยอดขายขี้ยางประจำวัน</div>
-      <div class="slip-body">
-        ${plotHtml}
-        <div class="slip-sub">วันที่ ${fmtThaiDate(d,false)}</div>
+      <div class="slip-card"><div class="slip-hdr">
+        สรุปยอดขายขี้ยางประจำวัน</div><div class="slip-body">
+        ${plotHtml}<div class="slip-sub">
+          วันที่ ${fmtThaiDate(d,false)}</div>
         <div class="sum-grid">
           <div class="sum-box"><span>จำนวนคนงาน</span>
-            <b>${wCount} คน</b></div>
+            <b>${wCnt} คน</b></div>
           <div class="sum-box"><span>น้ำหนักรวม</span>
             <b>${totW.toLocaleString()} กก.</b></div>
           <div class="sum-box"><span>ยอดขายก่อนหัก</span>
@@ -1238,243 +1084,186 @@ function renderSlipPreview(){
           <div class="sum-box hi" style="grid-column:span 2">
             <span>คงเหลือหลังจ่ายคนงาน</span>
             <b>${totRem.toLocaleString()} บ.</b></div>
-        </div>
-        <table class="sum-tbl">
-          <tr><th>ชื่อ</th><th>นน.</th><th>ยอดขาย</th>
-            <th>สะสม</th><th>รับสุทธิ</th><th>คงเหลือ</th></tr>
-          ${curSlipItems.map(c=>`<tr>
-            <td style="text-align:left"><b>${c.name}</b></td>
-            <td>${c.w.toLocaleString()}</td>
-            <td>${c.t.toLocaleString()}</td>
-            <td>${c.s.toLocaleString()}</td>
-            <td><b>${c.p.toLocaleString()}</b></td>
-            <td>${(c.t-c.s-c.p).toLocaleString()}</td></tr>`
-          ).join('')}
-          <tr style="background:#fffde7;font-weight:bold">
-            <td style="text-align:left">รวม</td>
-            <td>${totW.toLocaleString()}</td>
-            <td>${totT.toLocaleString()}</td>
-            <td>${totS.toLocaleString()}</td>
-            <td>${totP.toLocaleString()}</td>
-            <td>${totRem.toLocaleString()}</td></tr>
-        </table>
-      </div>
-    </div></div></div>`;
+        </div><table class="sum-tbl"><tr><th>ชื่อ</th>
+          <th>นน.</th><th>ยอดขาย</th><th>สะสม</th>
+          <th>รับสุทธิ</th><th>คงเหลือ</th></tr>`+
+      curSlipItems.map(c=>`<tr><td style="text-align:left">
+        <b>${c.name}</b></td><td>${c.w.toLocaleString()}</td>
+        <td>${c.t.toLocaleString()}</td><td>${c.s.toLocaleString()}</td>
+        <td><b>${c.p.toLocaleString()}</b></td>
+        <td>${(c.t-c.s-c.p).toLocaleString()}</td></tr>`).join('')+
+      `<tr style="background:#fffde7;font-weight:bold">
+        <td style="text-align:left">รวม</td>
+        <td>${totW.toLocaleString()}</td>
+        <td>${totT.toLocaleString()}</td>
+        <td>${totS.toLocaleString()}</td>
+        <td>${totP.toLocaleString()}</td>
+        <td>${totRem.toLocaleString()}</td></tr>
+      </table></div></div></div></div>`;
   }
   let cards=[];
   curSlipItems.forEach((c,i)=>{
-    if(document.getElementById('schk'+i)?.checked){
+    if($('schk'+i)?.checked){
       let wPct=c.t?Math.round((c.i/c.t)*1000)/10:40;
       let yrBE=Number(c.d.slice(0,4))+543;
-      cards.push(`<div class="slip-card">
-        <div class="slip-hdr">ใบจ่ายเงินขายขี้ยางก้อน</div>
-        <div class="slip-body">
-          ${plotHtml}
-          <div class="slip-sub">${fmtThaiDate(c.d,false)}</div>
-          <div class="slip-name">${c.name}</div>
-          <div class="slip-line"><span>น้ำหนัก (กิโลกรัม)</span>
-            <span>${c.w.toLocaleString()}</span></div>
-          <div class="slip-line"><span>ราคา (บาท/กก.)</span>
-            <span>${fmt2(c.pr)}</span></div>
-          <div class="slip-line"><span>ยอดขาย (บาท)</span>
-            <span>${fmt2(c.t)}</span></div>
-          <div class="slip-line"><span>ส่วนแบ่งคนงาน ${wPct}%</span>
-            <span>${fmt2(c.i)}</span></div>
-          <div class="slip-line"><span>หักสะสม (กำหนดเอง)</span>
-            <span>${fmt2(c.s)}</span></div>
-          <div class="slip-line slip-net"><span>จ่ายสุทธิ (บาท)</span>
-            <span>${fmt2(c.p)}</span></div>
-          <div class="slip-line" style="margin-top:6px">
-            <span>สะสมปี ${yrBE} ถึงครั้งนี้</span>
-            <span>${fmt2(c.cumSav)}</span></div>
-          <div class="slip-note">${c.nt?c.nt:'อื่น ๆ / หมายเหตุ'}</div>
-        </div>
-      </div>`);
+      cards.push(`<div class="slip-card"><div class="slip-hdr">
+        ใบจ่ายเงินขายขี้ยางก้อน</div><div class="slip-body">
+        ${plotHtml}<div class="slip-sub">
+          ${fmtThaiDate(c.d,false)}</div>
+        <div class="slip-name">${c.name}</div>
+        <div class="slip-line"><span>น้ำหนัก (กิโลกรัม)</span>
+          <span>${c.w.toLocaleString()}</span></div>
+        <div class="slip-line"><span>ราคา (บาท/กก.)</span>
+          <span>${fmt2(c.pr)}</span></div>
+        <div class="slip-line"><span>ยอดขาย (บาท)</span>
+          <span>${fmt2(c.t)}</span></div>
+        <div class="slip-line"><span>ส่วนแบ่งคนงาน ${wPct}%</span>
+          <span>${fmt2(c.i)}</span></div>
+        <div class="slip-line"><span>หักสะสม (กำหนดเอง)</span>
+          <span>${fmt2(c.s)}</span></div>
+        <div class="slip-line slip-net"><span>จ่ายสุทธิ (บาท)</span>
+          <span>${fmt2(c.p)}</span></div>
+        <div class="slip-line" style="margin-top:6px">
+          <span>สะสมปี ${yrBE} ถึงครั้งนี้</span>
+          <span>${fmt2(c.cumSav)}</span></div>
+        <div class="slip-note">${c.nt||'อื่น ๆ / หมายเหตุ'}</div>
+      </div></div>`);
     }
   });
-  for(let i=0;i<cards.length;i+=2){
+  for(let i=0;i<cards.length;i+=2)
     html+=`<div class="slip-page"><div class="slip-pair">
       ${cards[i]}${cards[i+1]||''}</div></div>`;
-  }
-  if(!html){
-    slipPreview.innerHTML=`<p style="color:#c62828;text-align:center">
+  slipPreview.innerHTML=html||
+    `<p style="color:#c62828;text-align:center">
       กรุณาติ๊กเลือกอย่างน้อย 1 รายการเพื่อพิมพ์สลิป</p>`;
-    return;
-  }
-  slipPreview.innerHTML=html;
-}
-function toggleAdminPanel(){
-  let panel = document.getElementById('adminPanel');
-  if(!panel.classList.contains('hide')){
-    closeAdminPanel();
-    return;
-  }
-  let pwd = prompt("🔐 กรุณาใส่รหัสผ่านแอดมิน (Admin PIN):");
-  if(pwd === null) return;
-  if(normPin(pwd) === ADMIN_PIN){
-    renderPlotSelector();
-    panel.classList.remove('hide');
-    document.getElementById('btnAdminToggle')
-      .classList.add('hide');
-  }else{
-    alert("❌ รหัสผ่านผู้ดูแลระบบไม่ถูกต้องครับ");
-  }
-}
-function closeAdminPanel(){
-  document.getElementById('adminPanel')
-    .classList.add('hide');
-  document.getElementById('btnAdminToggle')
-    .classList.remove('hide');
-  document.getElementById('bkBox').value = "";
 }
 
-function renameCurPlot(){
-  let inp = document.getElementById('renamePlotInp');
-  let newName = String(inp.value || "").trim();
-  if(!newName) return alert("กรุณากรอกชื่อแปลงครับ");
-  let isDup = PLOTS.some(p =>
-    p.id !== curPlotId &&
-    p.name.toLowerCase() === newName.toLowerCase()
-  );
-  if(isDup){
-    return alert(`ชื่อแปลง "${newName}" ซ้ำกับแปลงอื่นครับ`);
-  }
-  getCurPlot().name = newName;
+function toggleAdminPanel(){
+  if(!adminPanel.classList.contains('hide'))
+    return closeAdminPanel();
+  let pwd=prompt("🔐 กรุณาใส่รหัสผ่านแอดมิน (Admin PIN):");
+  if(pwd===null)return;
+  if(normPin(pwd)===ADMIN_PIN){
+    renderPlotSelector();curPinDisplay.innerText=APP_PIN;
+    newPinInp.value="";adminPanel.classList.remove('hide');
+    btnAdminToggle.classList.add('hide');
+  }else alert("❌ รหัสผ่านผู้ดูแลระบบไม่ถูกต้องครับ");
+}
+function closeAdminPanel(){
+  adminPanel.classList.add('hide');
+  btnAdminToggle.classList.remove('hide');
+  bkBox.value="";
+}
+function changeAppPin(){
+  let np=normPin(newPinInp.value);
+  if(!/^\d{4,}$/.test(np))
+    return alert("กรุณากรอกรหัสผ่านตัวเลขอย่างน้อย 4 หลักครับ");
+  if(np===APP_PIN)
+    return alert("รหัสผ่านใหม่ซ้ำกับรหัสผ่านปัจจุบันครับ");
+  if(!confirm(`ยืนยันการเปลี่ยนรหัสผ่านบัญชีเป็น "${np}"?`))
+    return;
+  APP_PIN=np;ls.setItem('rbCustomPin',APP_PIN);
+  ls.setItem('rbAuth',APP_PIN);
+  curPinDisplay.innerText=APP_PIN;newPinInp.value="";
   saveAllData();
-  renderPlotSelector();
-  alert(`เปลี่ยนชื่อแปลงเป็น "${newName}" เรียบร้อยครับ`);
+  alert(`เปลี่ยนรหัสผ่านเป็น "${APP_PIN}" เรียบร้อยแล้ว!`);
+}
+function renameCurPlot(){
+  let nm=String(renamePlotInp.value||"").trim();
+  if(!nm)return alert("กรุณากรอกชื่อแปลงครับ");
+  if(PLOTS.some(p=>p.id!==curPlotId&&
+    p.name.toLowerCase()===nm.toLowerCase()))
+    return alert(`ชื่อแปลง "${nm}" ซ้ำกับแปลงอื่นครับ`);
+  getCurPlot().name=nm;saveAllData();renderPlotSelector();
+  alert(`เปลี่ยนชื่อแปลงเป็น "${nm}" เรียบร้อยครับ`);
 }
 function addNewPlot(){
-  let nextNum = PLOTS.length + 1;
-  let defName = `แปลงที่ ${nextNum}`;
-  while(PLOTS.some(p =>
-    p.name.toLowerCase() === defName.toLowerCase()
-  )){
-    nextNum++;
-    defName = `แปลงที่ ${nextNum}`;
-  }
-  let name = prompt("กรอกชื่อแปลงขายยางใหม่:", defName);
-  if(name === null) return;
-  name = String(name).trim() || defName;
-  if(PLOTS.some(p =>
-    p.name.toLowerCase() === name.toLowerCase()
-  )){
-    return alert(`ชื่อแปลง "${name}" ซ้ำกับแปลงที่มีอยู่แล้วครับ`);
-  }
-  let np = makeDefaultPlot('plot_' + Date.now(), name);
-  PLOTS.push(np);
-  curPlotId = np.id;
-  saveAllData();
+  let n=PLOTS.length+1,def=`แปลงที่ ${n}`;
+  while(PLOTS.some(p=>p.name.toLowerCase()===def.toLowerCase()))
+    def=`แปลงที่ ${++n}`;
+  let nm=prompt("กรอกชื่อแปลงขายยางใหม่:",def);
+  if(nm===null)return;nm=String(nm).trim()||def;
+  if(PLOTS.some(p=>p.name.toLowerCase()===nm.toLowerCase()))
+    return alert(`ชื่อแปลง "${nm}" ซ้ำกับที่มีอยู่แล้วครับ`);
+  let np={
+    id:'plot_'+Date.now(),name:nm,
+    W:[{id:Date.now()+1,n:"คนงาน 1",s:0}],H:[]
+  };
+  PLOTS.push(np);curPlotId=np.id;saveAllData();
   switchPlot(curPlotId);
-  alert(`เพิ่ม "${name}" และสลับมาใช้งานเรียบร้อยครับ`);
+  alert(`เพิ่ม "${nm}" และสลับมาใช้งานเรียบร้อยครับ`);
 }
 function deleteCurPlot(){
-  if(PLOTS.length <= 1)
+  if(PLOTS.length<=1)
     return alert("ต้องมีอย่างน้อย 1 แปลงครับ ลบไม่ได้");
-  let curP = getCurPlot();
-  if(!confirm(`⚠️ ยืนยันการลบแปลง "${curP.name}" ใช่หรือไม่?\n`+
-    `ข้อมูลทั้งหมดในแปลงนี้จะถูกลบถาวร!`)) return;
-  if(!confirm(`ยืนยันครั้งสุดท้าย: ลบ "${curP.name}" จริงๆ ใช่ไหม?`))
+  let curP=getCurPlot();
+  if(!confirm(`⚠️ ยืนยันการลบแปลง "${curP.name}"?`)||
+     !confirm(`ยืนยันครั้งสุดท้าย: ลบ "${curP.name}" ถาวร?`))
     return;
-  PLOTS = PLOTS.filter(p => p.id !== curPlotId);
-  curPlotId = PLOTS.at(0).id;
-  saveAllData();
-  switchPlot(curPlotId);
+  PLOTS=PLOTS.filter(p=>p.id!==curPlotId);
+  curPlotId=PLOTS.id;saveAllData();switchPlot(curPlotId);
   alert("ลบแปลงเรียบร้อยแล้วครับ");
 }
 function clearPlotWorkers(){
-  let curP = getCurPlot();
-  if(!confirm(`⚠️ ล้างรายชื่อคนงานทั้งหมดใน "${curP.name}"?\n`+
-    `(จะสร้างชื่อเริ่มต้น "คนงาน 1" ให้ใหม่ ประวัติเก่าคงอยู่)`))
-    return;
-  curP.W = [{id: Date.now(), n: "คนงาน 1", s: 0}];
-  saveAllData();
-  init();
-  renderWList();
-  alert(`ล้างชื่อคนงานใน "${curP.name}" เรียบร้อยครับ`);
+  let c=getCurPlot();
+  if(confirm(`⚠️ ล้างรายชื่อคนงานทั้งหมดใน "${c.name}"?`)){
+    c.W=[{id:Date.now(),n:"คนงาน 1",s:0}];
+    saveAllData();init();renderWList();
+    alert(`ล้างชื่อคนงานใน "${c.name}" เรียบร้อยครับ`);
+  }
 }
 function clearPlotHistory(){
-  let curP = getCurPlot();
-  if(!confirm(`⚠️ ล้างประวัติการขายทั้งหมดใน "${curP.name}"?\n`+
-    `(รายชื่อคนงานและยอดเงินสะสมคงเหลือจะยังคงอยู่เหมือนเดิม)`))
-    return;
-  curP.H = [];
-  saveAllData();
-  init();
-  alert(`ล้างข้อมูลการขายใน "${curP.name}" เรียบร้อยครับ`);
+  let c=getCurPlot();
+  if(confirm(`⚠️ ล้างประวัติการขายทั้งหมดใน "${c.name}"?`)){
+    c.H=[];saveAllData();init();
+    alert(`ล้างข้อมูลการขายใน "${c.name}" เรียบร้อยครับ`);
+  }
 }
 function factoryResetPlot(){
-  let curP = getCurPlot();
-  if(!confirm(`🚨 คำเตือน: ล้างข้อมูลทั้งหมด (Factory Reset)\n`+
-    `เฉพาะ "${curP.name}" ใช่หรือไม่?`)) return;
-  if(!confirm(`ยืนยันครั้งสุดท้าย: ข้อมูลใน "${curP.name}"\n`+
-    `จะกู้คืนไม่ได้ ยืนยันใช่ไหมครับ?`)) return;
-  curP.W = [{id: Date.now(), n: "คนงาน 1", s: 0}];
-  curP.H = [];
-  saveAllData();
-  init();
-  renderWList();
-  alert(`รีเซ็ตข้อมูลทั้งหมดของ "${curP.name}" เรียบร้อยครับ`);
+  let c=getCurPlot();
+  if(confirm(`🚨 ล้างข้อมูลทั้งหมด (Factory Reset) "${c.name}"?`)&&
+     confirm(`ยืนยันครั้งสุดท้าย: ข้อมูลจะกู้คืนไม่ได้?`)){
+    c.W=[{id:Date.now(),n:"คนงาน 1",s:0}];c.H=[];
+    saveAllData();init();renderWList();
+    alert(`รีเซ็ตข้อมูลทั้งหมดของ "${c.name}" เรียบร้อยครับ`);
+  }
 }
-
 function doBackup(){
-  let curP = getCurPlot();
-  let s=JSON.stringify({plots:PLOTS, W:curP.W, H:curP.H});
-  bkBox.value=s;
-  navigator.clipboard.writeText(s);
+  let c=getCurPlot();
+  let s=JSON.stringify({
+    appPin:APP_PIN,plots:PLOTS,W:c.W,H:c.H
+  });
+  bkBox.value=s;navigator.clipboard.writeText(s);
   alert("คัดลอกข้อมูลสำรองทั้งระบบเรียบร้อยแล้ว!");
 }
 function doRestore(){
   try{
     let d=JSON.parse(bkBox.value);
-    if(!confirm("⚠️ การกู้คืนจะเขียนทับข้อมูลทั้งหมด ต้องการต่อหรือไม่?"))
+    if(!confirm("⚠️ การกู้คืนจะเขียนทับข้อมูลทั้งหมด ยืนยัน?"))
       return;
-    if(Array.isArray(d.plots) && d.plots.length){
-      PLOTS = d.plots.map((p,idx)=>({
-        id: p.id || ('plot_'+(idx+1)),
-        name: p.name || ('แปลงที่ '+(idx+1)),
-        W: (p.W && p.W.length ? p.W :
-          [{id:Date.now()+idx,n:"คนงาน 1",s:0}])
-          .map((x,i)=>({
-            id:x.id||(i+1),
-            n:stripNum(x.n)||x.n,
-            s:+x.s||0
-          })),
-        H: (p.H || []).map(x=>({
-          ...x,
-          nt:x.nt||"",
-          wn:stripNum(x.wn)||x.wn
-        }))
-      }));
-      curPlotId = PLOTS.at(0).id;
-    }else if(d.W && d.H){
-      let rW=d.W.map((x,i)=>({
-        id:x.id||(i+1),n:stripNum(x.n)||x.n,s:+x.s||0
-      }));
-      let rH=d.H.map(x=>({
-        ...x,nt:x.nt||"",wn:stripNum(x.wn)||x.wn,
-        wid:x.wid||(rW[x.wi]?rW[x.wi].id:1)
-      }));
-      PLOTS = [{id:'plot_1', name:'แปลงที่ 1', W:rW, H:rH}];
-      curPlotId = 'plot_1';
-    }else{
-      throw 0;
+    if(d.appPin&&/^\d{4,}$/.test(normPin(d.appPin))){
+      APP_PIN=normPin(d.appPin);
+      ls.setItem('rbCustomPin',APP_PIN);
+      ls.setItem('rbAuth',APP_PIN);
     }
-    saveAllData();
-    init();
-    closeAdminPanel();
-    alert("กู้คืนข้อมูลสำเร็จ!");
-    tab(1);
-  }catch(e){
-    alert("รหัสข้อมูลสำรองไม่ถูกต้องครับ");
-  }
+    if(Array.isArray(d.plots)&&d.plots.length){
+      PLOTS=normPlots(d.plots);curPlotId=PLOTS.id;
+    }else if(d.W&&d.H){
+      PLOTS=normPlots([{
+        id:'plot_1',name:'แปลงที่ 1',W:d.W,
+        H:d.H.map(x=>({...x,
+          wid:x.wid||(d.W[x.wi]?d.W[x.wi].id:1)}))
+      }]);
+      curPlotId='plot_1';
+    }else throw 0;
+    saveAllData();init();closeAdminPanel();
+    alert("กู้คืนข้อมูลสำเร็จ!");tab(1);
+  }catch(e){alert("รหัสข้อมูลสำรองไม่ถูกต้องครับ");}
 }
-
-if(localStorage.getItem('rbAuth') === APP_PIN){
+if(ls.getItem('rbAuth')===APP_PIN){
   loginBox.classList.add('hide');
   appMain.classList.remove('hide');
-  init();
-  syncCloud(false);
+  init();syncCloud(0);
 }
 </script>
 </body>
