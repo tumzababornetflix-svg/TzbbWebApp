@@ -873,6 +873,7 @@ function restoreOldW(wid){
   renderWList();showDeletedW();
   alert(`ดึง "${clean}" กลับมาเรียบร้อย! กด "บันทึกการแก้ไขทั้งหมด" เพื่อยืนยัน`);
 }
+
 function saveW(){
   let W = getW(), H = getH();
   let seen=new Set(),activeIds=new Set(W.map(x=>x.id));
@@ -887,9 +888,13 @@ function saveW(){
       return alert(`ชื่อ "${nm}" ซ้ำกับประวัติคนงานเก่าที่ลบไปแล้วในแปลงนี้!`);
     seen.add(low);
   }
-  syncWInputs();saveAllData();init();
-  alert("บันทึกการแก้ไขเรียบร้อย!");tab(1);
+  syncWInputs();
+  saveAllData();
+  init();
+  renderWList();
+  alert("บันทึกการแก้ไขเรียบร้อย!");
 }
+
 function renderYear(){
   let H = getH();
   let y=yrSel.value;
