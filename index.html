@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="apple-mobile-web-app-capable" content="yes">
 <title>บัญชีขายขี้ยาง</title>
 <style>
 *{box-sizing:border-box;font-family:sans-serif}
@@ -141,7 +140,7 @@ th{background:#e8f5e9;text-align:center}
 .admin-sec h3{margin:0 0 8px;font-size:16px;color:#263238}
 .hide{display:none!important}
 
- @page {
+@page {
   size: A4 portrait;
   margin: 0;
 }
@@ -166,7 +165,7 @@ th{background:#e8f5e9;text-align:center}
   }
   .slip-page {
     width: 210mm;
-    height: 274mm; /* ลดความสูงลงให้พอดีกับพื้นที่พิมพ์จริง ไม่ล้นขึ้นหน้าใหม่ */
+    height: 274mm;
     padding: 6mm;
     display: flex !important;
     align-items: center;
@@ -184,7 +183,7 @@ th{background:#e8f5e9;text-align:center}
     display: grid !important;
     grid-template-columns: 1fr 1fr !important;
     gap: 10mm;
-    width: 260mm; /* ปรับขนาดให้รับกับความสูง 274mm */
+    width: 260mm;
     height: 186mm;
     flex-shrink: 0;
     margin: 0;
@@ -194,7 +193,7 @@ th{background:#e8f5e9;text-align:center}
   .slip-portrait {
     display: block !important;
     width: 194mm;
-    height: 260mm; /* ลดความสูงใบสรุปไม่ให้ดันทะลุกรอบ */
+    height: 260mm;
     margin: 0;
     overflow: visible;
   }
@@ -209,7 +208,6 @@ th{background:#e8f5e9;text-align:center}
   .slip-portrait .sum-tbl td { padding: 7px 5px; }
   .slip-card { width: 100%; height: 100%; }
 }
-
 </style>
 </head>
 <body>
@@ -419,7 +417,7 @@ th{background:#e8f5e9;text-align:center}
     </div>
     <div id="slipChkList" style="margin-top:10px"></div>
     <button type="button" id="btnPdf" class="bg"
-      onclick="saveSlipPdf()">📥 บันทึกสลิปเป็นไฟล์ PDF</button>
+      onclick="saveSlipPdf()">📥 พิมพ์ / บันทึกสลิปเป็น PDF</button>
     <hr style="margin:15px 0;border:1px dashed #ccc">
   </div>
   <div id="slipPreview"></div>
@@ -428,7 +426,7 @@ th{background:#e8f5e9;text-align:center}
 <script>
 const APP_PIN = "1234";
 const ADMIN_PIN = "0955511956";
-const FB_URL = "https://seeview-rubber-default-rtdb.asia-southeast1.firebasedatabase.app/";
+const FB_URL = "https://firebasedatabase.app";
 
 function normPin(s){
   return String(s||"").trim()
@@ -528,7 +526,6 @@ function setH(arr){ getCurPlot().H = arr; }
 let S={tot:0,inc:0,sav:0,net:0,newS:0};
 let editIdx=-1,editFromTab=4,curSlipItems=[],curTab=1;
 dt.valueAsDate=new Date();
-
 function renderPlotSelector(){
   let bar = document.getElementById('plotBar');
   if(bar) bar.classList.toggle('hide', PLOTS.length <= 1);
@@ -636,7 +633,7 @@ async function syncCloud(push){
     }
   }catch(e){
     if(push)localStorage.setItem('rbDirty','1');
-    syncStatus.innerText="🔴 ซิงค์ไม่ได้: "+(e.message||"ไม่มีเน็ต");
+    syncStatus.innerText="🔴 ไม่มีเน็ต (บันทึกในเครื่องแล้ว รอซิงค์อัตโนมัติ)";
     syncStatus.style.background="#ffebee";
     syncStatus.style.color="#c62828";
   }
@@ -653,7 +650,6 @@ setInterval(()=>{
     localStorage.getItem('rbDirty')==='1')
     syncCloud(true);
 },15000);
-
 function saveAllData(){
   localStorage.setItem('rbPlotsV1', JSON.stringify(PLOTS));
   localStorage.setItem('rbCurPlotId', curPlotId);
@@ -1015,66 +1011,67 @@ function delLog(idx,fromTab,dateStr){
   }else{renderPerson();}
   alert("ลบรายการและปรับยอดสะสมเรียบร้อยแล้วครับ");
 }
-
 function saveSlipPdf(){
   if(!slipPreview.querySelector('.slip-page')){
     return alert("กรุณาติ๊กเลือกอย่างน้อย 1 รายการครับ");
   }
-  let dStr = prDateSel.value || 'slip';
-  let pName = getCurPlot().name.replace(/\s+/g,'_');
-  let fileTitle = `สลิปขายยาง_${pName}_${dStr}`;
 
-  // ตรวจสอบว่าเปิดจากไอคอนหน้าจอหลัก iPhone (โหมดเต็มจอ) หรือไม่
-  let isIosStandalone =
-    window.navigator.standalone === true ||
-    window.matchMedia('(display-mode: standalone)').matches;
+  let oldFrame = document.getElementById('printFrame');
+  if(oldFrame) oldFrame.remove();
 
-  if(isIosStandalone){
-    let selIdx = [];
-    curSlipItems.forEach((_, i)=>{
-      if(document.getElementById('schk'+i)?.checked) selIdx.push(i);
-    });
-    let sumChk = document.getElementById('schkSum')?.checked ? 1 : 0;
-    
-    // ตัดเฉพาะ URL หลักอย่างถูกต้องด้วย .at(0)
-    let baseUrl = window.location.href.split('#').at(0).split('?').at(0);
-    let hashParams = new URLSearchParams();
-    hashParams.set('printSlip', '1');
-    hashParams.set('plot', curPlotId);
-    hashParams.set('date', dStr);
-    hashParams.set('sum', sumChk);
-    hashParams.set('items', selIdx.join(','));
+  let iframe = document.createElement('iframe');
+  iframe.id = 'printFrame';
+  iframe.style.cssText = 'position:fixed;right:0;bottom:0;width:0;height:0;border:0;';
+  document.body.appendChild(iframe);
 
-    let targetUrl = baseUrl + '#' + hashParams.toString();
+  let styles = document.querySelector('style').innerHTML;
+  let content = slipPreview.innerHTML;
 
-    // สั่งเปิดในแอป Safari ตัวหลักอัตโนมัติ
-    window.open(targetUrl, '_blank');
-    return;
+  let doc = iframe.contentWindow.document;
+  doc.open();
+  doc.write(`<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<title></title>
+<style>
+${styles}
+@page { size: A4 portrait; margin: 0; }
+@media print {
+  html, body {
+    width: 210mm;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #fff !important;
   }
-
-  // กรณีเปิดผ่านเบราว์เซอร์ปกติ ให้สั่งพิมพ์ทันที
-  let origTitle = document.title;
-  document.title = fileTitle;
-  let triggerPrint = ()=>{
-    setTimeout(()=>{
-      window.print();
-      setTimeout(()=>{document.title = origTitle;}, 1500);
-    }, 150);
-  };
-  let fsEl = document.fullscreenElement ||
-    document.webkitFullscreenElement;
-  if(fsEl){
-    let exitFn = document.exitFullscreen ||
-      document.webkitExitFullscreen;
-    if(exitFn){
-      Promise.resolve(exitFn.call(document))
-        .then(triggerPrint).catch(triggerPrint);
-      return;
-    }
+  .slip-page {
+    width: 210mm;
+    height: 274mm;
+    padding: 6mm;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    page-break-after: always;
+    break-after: page;
+    overflow: hidden;
+    box-sizing: border-box;
   }
-  triggerPrint();
+  .slip-page:last-child {
+    page-break-after: auto;
+    break-after: auto;
+  }
 }
+</style>
+</head>
+<body>${content}</body>
+</html>`);
+  doc.close();
 
+  setTimeout(()=>{
+    iframe.contentWindow.focus();
+    iframe.contentWindow.print();
+  }, 200);
+}
 
 function renderDaily(){
   let H = getH();
@@ -1211,10 +1208,8 @@ function toggleAllSlips(flag){
   });
   renderSlipPreview();
 }
-
 function renderSlipPreview(){
   let html="", plotName = getCurPlot().name;
-  // ซ่อนชื่อแปลงอัตโนมัติหากมีเพียง 1 แปลง
   let plotHtml = (PLOTS.length > 1) ? `<div class="slip-plot">🌳 ${plotName}</div>` : '';
   let sumChecked = document.getElementById('schkSum')?.checked;
   if(sumChecked && curSlipItems.length){
@@ -1308,8 +1303,6 @@ function renderSlipPreview(){
   }
   slipPreview.innerHTML=html;
 }
-
-
 function toggleAdminPanel(){
   let panel = document.getElementById('adminPanel');
   if(!panel.classList.contains('hide')){
@@ -1389,7 +1382,6 @@ function deleteCurPlot(){
   switchPlot(curPlotId);
   alert("ลบแปลงเรียบร้อยแล้วครับ");
 }
-
 function clearPlotWorkers(){
   let curP = getCurPlot();
   if(!confirm(`⚠️ ล้างรายชื่อคนงานทั้งหมดใน "${curP.name}"?\n`+
@@ -1478,58 +1470,35 @@ function doRestore(){
   }
 }
 
-function exitPrintMode(){
-  window.location.href = window.location.href.split('#').at(0).split('?').at(0);
+if(localStorage.getItem('rbAuth') === APP_PIN){
+  loginBox.classList.add('hide');
+  appMain.classList.remove('hide');
+  init();
+  syncCloud(false);
 }
 
-(function(){
-  let hashStr = window.location.hash.replace(/^#/, '');
-  let params = new URLSearchParams(hashStr);
-  if(params.get('printSlip') === '1'){
-    let pId = params.get('plot');
-    if(pId && PLOTS.some(p=>p.id===pId)) curPlotId = pId;
-    loginBox.classList.add('hide');
-    appMain.classList.remove('hide');
-    init();
-    tab(6);
-    let dStr = params.get('date');
-    if(dStr){
-      prDateSel.value = dStr;
-      renderSlipList();
-    }
-    let sEl = document.getElementById('schkSum');
-    if(sEl) sEl.checked = (params.get('sum') === '1');
-    let allow = new Set((params.get('items')||'').split(','));
-    curSlipItems.forEach((_, i)=>{
-      let el = document.getElementById('schk'+i);
-      if(el) el.checked = allow.has(String(i));
+if ('serviceWorker' in navigator && window.location.protocol.startsWith('http')) {
+  const swCode = `
+    const CACHE = 'rubber-offline-v2';
+    self.addEventListener('install', e => {
+      self.skipWaiting();
+      e.waitUntil(caches.open(CACHE).then(c => c.addAll([self.location.href])));
     });
-    renderSlipPreview();
-
-    let topBox = document.querySelector('#appMain > .no-print');
-    if(topBox) topBox.classList.add('hide');
-    let p6Ctrl = document.querySelector('#p6 > .no-print');
-    if(p6Ctrl){
-      p6Ctrl.innerHTML = `
-        <div style="display:flex;gap:8px;margin-bottom:12px">
-          <button type="button" class="br" style="margin:0;flex:1"
-            onclick="exitPrintMode()">⬅️ กลับหน้าหลัก</button>
-          <button type="button" class="bg" style="margin:0;flex:2"
-            onclick="window.print()">🖨️ พิมพ์ / บันทึก PDF</button>
-        </div>`;
-    }
-    setTimeout(()=>{ window.print(); }, 500);
-    return;
-  }
-  if(localStorage.getItem('rbAuth') === APP_PIN){
-    loginBox.classList.add('hide');
-    appMain.classList.remove('hide');
-    init();
-    syncCloud(false);
-  }
-})();
-
-
+    self.addEventListener('activate', e => e.waitUntil(clients.claim()));
+    self.addEventListener('fetch', e => {
+      if (e.request.url.includes('firebasedatabase.app')) return;
+      e.respondWith(
+        fetch(e.request).then(res => {
+          let copy = res.clone();
+          caches.open(CACHE).then(c => c.put(e.request, copy));
+          return res;
+        }).catch(() => caches.match(e.request))
+      );
+    });
+  `;
+  const blob = new Blob([swCode], { type: 'application/javascript' });
+  navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(() => {});
+}
 </script>
 </body>
 </html>
