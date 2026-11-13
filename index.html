@@ -749,9 +749,10 @@ function renderWList(){
     <label style="font-size:15px;margin:2px 0">
       ยอดสะสมคงเหลือ (บาท)</label>
     <input type="number" step="0.01" id="es${i}"
-      class="yel" value="${(+x.s||0).toFixed(2)}">
+      class="yel" value="${Math.round((+x.s||0)*100)/100}">
   </div>`).join('');
 }
+
 
 function syncWInputs(){
   getW().forEach((x,i)=>{
