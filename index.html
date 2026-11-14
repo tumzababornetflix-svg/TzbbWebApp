@@ -206,7 +206,7 @@ th{background:#e8f5e9;text-align:center}
       <span>🌳 แปลง:</span>
       <select id="plotSel" onchange="switchPlot(this.value)"></select>
     </div>
-       <div class="g2">
+    <div class="g2">
       <button type="button" id="m1" class="bm act"
         onclick="tab(1)">📝 จดขายยาง</button>
       <button type="button" id="m2" class="bm"
@@ -259,7 +259,6 @@ th{background:#e8f5e9;text-align:center}
     <button type="button" id="btnCancelEdit" class="br hide"
       onclick="cancelEdit()">❌ ยกเลิกการแก้ไข</button>
   </div>
-
   <div id="p2" class="box hide no-print">
     <h2>💰 จัดการรายชื่อและยอดสะสม</h2>
     <div id="wList"></div>
@@ -296,6 +295,22 @@ th{background:#e8f5e9;text-align:center}
         </div>
         <div style="font-size:12px;color:#546e7a;margin-top:6px">
           * รหัสผ่านปัจจุบัน: <b id="curPinDisplay"></b>
+          (ซิงค์อัตโนมัติทุกเครื่อง)
+        </div>
+      </div>
+      <div class="admin-sec">
+        <h3>🛡️ เปลี่ยนรหัสผ่านแอดมิน (Admin PIN)</h3>
+        <label style="font-size:14px;margin-top:4px">
+          รหัสผ่านแอดมินใหม่ (ตัวเลข 4 หลักขึ้นไป):</label>
+        <div style="display:flex;gap:6px">
+          <input type="text" inputmode="numeric" id="newAdminPinInp"
+            style="font-size:16px;padding:8px" placeholder="เช่น 999999">
+          <button type="button" class="bg"
+            style="width:auto;margin:0;padding:8px 12px;white-space:nowrap"
+            onclick="changeAdminPin()">💾 บันทึกรหัส</button>
+        </div>
+        <div style="font-size:12px;color:#546e7a;margin-top:6px">
+          * รหัสแอดมินปัจจุบัน: <b id="curAdminPinDisplay"></b>
           (ซิงค์อัตโนมัติทุกเครื่อง)
         </div>
       </div>
@@ -401,11 +416,11 @@ th{background:#e8f5e9;text-align:center}
 <script>
 const $=id=>document.getElementById(id);
 const ls=localStorage;
-const ADMIN_PIN="0955511956";
 const FB_URL="https://seeview-rubber-default-rtdb"
   +".asia-southeast1.firebasedatabase.app"
   +"/rubberData.json";
 let APP_PIN=ls.getItem('rbCustomPin')||"1234";
+let ADMIN_PIN=ls.getItem('rbAdminPin')||"0955511956";
 const normPin=s=>String(s||"").trim()
   .replace(/[๐-๙]/g,c=>"๐๑๒๓๔๕๖๗๘๙".indexOf(c));
 const stripNum=n=>String(n||"")
@@ -520,8 +535,8 @@ async function syncCloud(push){
         method:'PUT',
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify({
-          appPin:APP_PIN,plots:PLOTS,
-          W:curP.W,H:curP.H
+          appPin:APP_PIN,adminPin:ADMIN_PIN,
+          plots:PLOTS,W:curP.W,H:curP.H
         })
       });
       if(!res.ok)throw 0;
@@ -538,6 +553,14 @@ async function syncCloud(push){
           ls.setItem('rbCustomPin',APP_PIN);
           if(auth)ls.setItem('rbAuth',APP_PIN);
           curPinDisplay.innerText=APP_PIN;
+        }
+      }
+      if(d&&d.adminPin){
+        let cap=normPin(d.adminPin);
+        if(cap&&cap!==ADMIN_PIN){
+          ADMIN_PIN=cap;
+          ls.setItem('rbAdminPin',ADMIN_PIN);
+          curAdminPinDisplay.innerText=ADMIN_PIN;
         }
       }
       if(d&&Array.isArray(d.plots)&&d.plots.length){
@@ -735,7 +758,6 @@ function tab(n){
   if(n==5){fillYears();renderDaily();}
   if(n==6)initSlipPage();
 }
-
 function renderWList(){
   wList.innerHTML=getW().map((x,i)=>`
   <div class="w-card">
@@ -752,7 +774,6 @@ function renderWList(){
       class="yel" value="${Math.round((+x.s||0)*100)/100}">
   </div>`).join('');
 }
-
 
 function syncWInputs(){
   getW().forEach((x,i)=>{
@@ -1193,15 +1214,18 @@ function renderSlipPreview(){
     `<p style="color:#c62828;text-align:center">
       กรุณาติ๊กเลือกอย่างน้อย 1 รายการเพื่อพิมพ์สลิป</p>`;
 }
-
 function toggleAdminPanel(){
   if(!adminPanel.classList.contains('hide'))
     return closeAdminPanel();
   let pwd=prompt("🔐 กรุณาใส่รหัสผ่านแอดมิน (Admin PIN):");
   if(pwd===null)return;
   if(normPin(pwd)===ADMIN_PIN){
-    renderPlotSelector();curPinDisplay.innerText=APP_PIN;
-    newPinInp.value="";adminPanel.classList.remove('hide');
+    renderPlotSelector();
+    curPinDisplay.innerText=APP_PIN;
+    curAdminPinDisplay.innerText=ADMIN_PIN;
+    newPinInp.value="";
+    newAdminPinInp.value="";
+    adminPanel.classList.remove('hide');
     btnAdminToggle.classList.add('hide');
   }else alert("❌ รหัสผ่านผู้ดูแลระบบไม่ถูกต้องครับ");
 }
@@ -1223,6 +1247,19 @@ function changeAppPin(){
   curPinDisplay.innerText=APP_PIN;newPinInp.value="";
   saveAllData();
   alert(`เปลี่ยนรหัสผ่านเป็น "${APP_PIN}" เรียบร้อยแล้ว!`);
+}
+function changeAdminPin(){
+  let nap=normPin(newAdminPinInp.value);
+  if(!/^\d{4,}$/.test(nap))
+    return alert("กรุณากรอกรหัสผ่านแอดมินตัวเลขอย่างน้อย 4 หลักครับ");
+  if(nap===ADMIN_PIN)
+    return alert("รหัสผ่านแอดมินใหม่ซ้ำกับรหัสผ่านปัจจุบันครับ");
+  if(!confirm(`ยืนยันการเปลี่ยนรหัสผ่านแอดมินเป็น "${nap}"?`))
+    return;
+  ADMIN_PIN=nap;ls.setItem('rbAdminPin',ADMIN_PIN);
+  curAdminPinDisplay.innerText=ADMIN_PIN;newAdminPinInp.value="";
+  saveAllData();
+  alert(`เปลี่ยนรหัสผ่านแอดมินเป็น "${ADMIN_PIN}" เรียบร้อยแล้ว!`);
 }
 function renameCurPlot(){
   let nm=String(renamePlotInp.value||"").trim();
@@ -1287,7 +1324,8 @@ function factoryResetPlot(){
 function doBackup(){
   let c=getCurPlot();
   let s=JSON.stringify({
-    appPin:APP_PIN,plots:PLOTS,W:c.W,H:c.H
+    appPin:APP_PIN,adminPin:ADMIN_PIN,
+    plots:PLOTS,W:c.W,H:c.H
   });
   bkBox.value=s;navigator.clipboard.writeText(s);
   alert("คัดลอกข้อมูลสำรองทั้งระบบเรียบร้อยแล้ว!");
@@ -1301,6 +1339,10 @@ function doRestore(){
       APP_PIN=normPin(d.appPin);
       ls.setItem('rbCustomPin',APP_PIN);
       ls.setItem('rbAuth',APP_PIN);
+    }
+    if(d.adminPin&&/^\d{4,}$/.test(normPin(d.adminPin))){
+      ADMIN_PIN=normPin(d.adminPin);
+      ls.setItem('rbAdminPin',ADMIN_PIN);
     }
     if(Array.isArray(d.plots)&&d.plots.length){
       PLOTS=normPlots(d.plots);curPlotId=PLOTS.at(0).id;
